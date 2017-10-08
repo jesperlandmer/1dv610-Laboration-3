@@ -1,9 +1,21 @@
 <?php
 
+namespace view;
+
+require_once('LoginView.php');
+require_once('RegisterView.php');
+require_once('DateTimeView.php');
 
 class LayoutView {
+
+  public function __construct() 
+  {
+    $this->loginView = new LoginView();
+    $this->registerView = new RegisterView();
+    $this->dateTimeView = new DateTimeView();
+  }
   
-  public function render($isLoggedIn, LoginView $v, DateTimeView $dtv) {
+  public function render($isLoggedIn) {
     echo '<!DOCTYPE html>
       <html>
         <head>
@@ -15,9 +27,9 @@ class LayoutView {
           ' . $this->renderIsLoggedIn($isLoggedIn) . '
           
           <div class="container">
-              ' . $v->response() . '
+              ' . $this->loginView->response() . '
               
-              ' . $dtv->show() . '
+              ' . $this->dateTimeView->showDateTimeFormat() . '
           </div>
          </body>
       </html>
