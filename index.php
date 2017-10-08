@@ -12,8 +12,7 @@ ini_set('display_errors', 'On');
 //CREATE OBJECTS OF THE VIEWS
 $v = new LoginView();
 $dtv = new DateTimeView();
-$lv = new LayoutView();
+$test = new LayoutView();
 
-
-$lv->render(false, $v, $dtv);
+$test->render(false, $v, $dtv);
 
