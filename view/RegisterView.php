@@ -3,17 +3,19 @@
 namespace view;
 
 class RegisterView {
-	private static $register = 'RegisterView::Register';
-	private static $registerName = 'RegisterView::UserName';
-	private static $registerPassword = 'RegisterView::Password';
-	private static $registerPasswordRepeat = 'RegisterView::PasswordRepeat';
-	private static $registerMessageId = 'RegisterView::Message';
+	private static $register = "RegisterView::Register";
+	private static $registerName = "RegisterView::UserName";
+	private static $registerPassword = "RegisterView::Password";
+	private static $registerPasswordRepeat = "RegisterView::PasswordRepeat";
+	private static $registerMessageId = "RegisterView::Message";
 
 	/**
 	 * @return  void BUT writes to standard output!
 	 */
-	public function response($isLoggedIn) {
-
+	public function response(string $message) 
+	{
+		$response = $this->generateRegisterFormHTML($message);
+		return $response;
 	}
 
 	/**
@@ -44,6 +46,26 @@ class RegisterView {
 				</fieldset>
 			</form>
 		';
+	}
+
+	public function isRegister()
+	{
+		return isset($_REQUEST[self::$register]);
+	}
+
+	public function getRequestUserName() 
+	{
+		return $_REQUEST[self::$registerName];
+	}
+
+	public function getRequestPassword() 
+	{
+		return $_REQUEST[self::$registerPassword];
+	}
+
+	public function getRequestPasswordRepeat() 
+	{
+		return $_REQUEST[self::$registerPasswordRepeat];
 	}
 
 }

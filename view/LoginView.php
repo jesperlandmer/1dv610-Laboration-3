@@ -3,34 +3,26 @@
 namespace view;
 
 class LoginView {
-	private static $login = 'LoginView::Login';
-	private static $logout = 'LoginView::Logout';
-	private static $name = 'LoginView::UserName';
-	private static $password = 'LoginView::Password';
-	private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
-	private static $keep = 'LoginView::KeepMeLoggedIn';
-	private static $messageId = 'LoginView::Message';
-
-	
+	private static $login = "LoginView::Login";
+	private static $logout = "LoginView::Logout";
+	private static $name = "LoginView::UserName";
+	private static $password = "LoginView::Password";
+	private static $cookieName = "LoginView::CookieName";
+	private static $cookiePassword = "LoginView::CookiePassword";
+	private static $keep = "LoginView::KeepMeLoggedIn";
+	private static $messageId = "LoginView::Message";
 
 	/**
-	 * Create HTTP response
-	 *
-	 * Should be called after a login attempt has been determined
-	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() {
-		$message = '';
-		
+	public function response(string $message) 
+	{
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
 
 	/**
-	* Generate HTML code on the output buffer for the logout button
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
@@ -44,7 +36,6 @@ class LoginView {
 	}
 	
 	/**
-	* Generate HTML code on the output buffer for the logout button
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
@@ -69,10 +60,24 @@ class LoginView {
 			</form>
 		';
 	}
-	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
+
+	public function isLogin()
+	{
+		return isset($_REQUEST[self::$login]);
 	}
-	
+
+	public function isLogout()
+	{
+		return isset($_REQUEST[self::$logout]);
+	}
+
+	public function getRequestUserName() 
+	{
+		return $_REQUEST[self::$name];
+	}
+
+	public function getRequestPassword() 
+	{
+		return $_REQUEST[self::$password];
+	}
 }

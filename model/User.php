@@ -2,12 +2,11 @@
 
 namespace model;
 
-require_once("UserObserver.php");
 require_once("DatabaseHelper.php");
 require_once("PersistantUser.php");
 require_once("Validator.php");
 
-class User implements UserObserver {
+class User {
 
   public function __construct(string $username, string $password, string $passwordRepeat) 
   {

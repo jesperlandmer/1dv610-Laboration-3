@@ -2,10 +2,7 @@
 
 namespace model;
 
-/**
- * Model observer
- */
 interface UserObserver {
-	public function saveUserToDatabase(string $username, string $password);
-	public function getUserFromDatabase(string $username);
+	public function getRequestUsername(PersistantUser $user);
+	public function getRequestErrors(PersistantUser $user);
 }

@@ -9,6 +9,5 @@ ini_set('display_errors', 'On');
 require_once('model/User.php');
 require_once('view/LayoutView.php');
 
-$layOutView = new \view\LayoutView();
-$layOutView->render(false);
-
+$layOutView = new \view\LayoutView(false);
+$layOutView->render();

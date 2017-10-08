@@ -29,6 +29,14 @@ class PersistantUser
     }
 
     /**
+     * @return string
+     */
+    public function getUsername()
+    {
+      return $_SESSION[self::$username];
+    }
+
+    /**
      * @return void
      */
     public function setErrorMessage(string $message)
