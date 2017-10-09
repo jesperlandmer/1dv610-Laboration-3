@@ -8,45 +8,66 @@ require_once("Validator.php");
 
 class User {
 
-  public function __construct(string $username, string $password, string $passwordRepeat) 
+  private $username;
+  private $password;
+  private $passwordRepeat;
+
+  public function __construct(RegisterObserver $observer) 
   {
+    $this->username = $observer->getRequestUsername();
+    $this->password = $observer->getRequestPassword();
+    $this->passwordRepeat = $observer->getRequestPasswordRepeat();
+
     $this->dbHelper = new DatabaseHelper();
-    $this->user = new PersistantUser($username, $password, $passwordRepeat);
-    $this->validator = new Validator($this->user);
+    $this->user = new PersistantUser($this->username, $this->password, $this->passwordRepeat);
+    $this->validator = new Validator($this->user, $this->getUsernameFromDatabase());
+
+    $this->newRegister($observer);
   }
 
   /**
    * @return void
    */
-  public function saveUserToDatabase(string $username, string $password) 
+  public function newRegister(RegisterObserver $observer) 
   {
-    assert(isset($username));
-    assert(isset($password));
-
     if ($this->user->isErrors() == false) {
-      $this->userData = $this->dbHelper->saveData(array(
-        'username' => $username,
-        'password' => $this->hashString($password)
-      ));
+      $this->saveUserToDatabase();
+    } else {
+      $observer->setLastUsernameInput($this->username);
+      $observer->setRequestMessage($this->user->getErrorMessage());
     }
   }
 
   /**
    * @return void
    */
-  public function getUserFromDatabase(string $username) 
+  public function saveUserToDatabase() 
   {
-    assert(isset($username));
+    assert(isset($this->username));
+    assert(isset($this->password));
+
+    $this->userData = $this->dbHelper->saveData(array(
+      'username' => $this->username,
+      'password' => $this->getHashedPassword()
+    ));
+  }
+
+  /**
+   * @return void
+   */
+  public function getUsernameFromDatabase() 
+  {
+    assert(isset($this->username));
 
     return $this->dbHelper->findData(array(
-      'username' => $username
+      'username' => $this->username
     ));
   }
 
   /**
    * @return string
    */
-  private function hashString(string $password) {
-    return password_hash("$password", PASSWORD_BCRYPT, ["cost" => 8]);
+  private function getHashedPassword() {
+    return password_hash("$this->password", PASSWORD_BCRYPT, ["cost" => 8]);
   }
 }

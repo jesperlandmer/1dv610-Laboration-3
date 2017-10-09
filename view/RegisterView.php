@@ -2,18 +2,26 @@
 
 namespace view;
 
-class RegisterView {
+require_once(__DIR__ . '/../model/RegisterObserver.php');
+
+class RegisterView implements \model\RegisterObserver {
+
 	private static $register = "RegisterView::Register";
 	private static $registerName = "RegisterView::UserName";
 	private static $registerPassword = "RegisterView::Password";
 	private static $registerPasswordRepeat = "RegisterView::PasswordRepeat";
-	private static $registerMessageId = "RegisterView::Message";
+	private static $registerMessage = "RegisterView::Message";
 
 	/**
 	 * @return  void BUT writes to standard output!
 	 */
-	public function response(string $message) 
+	public function response() 
 	{
+		$message = "";
+		if ($this->isMessage()) {
+			$message = $_REQUEST[self::$registerMessage];
+		}
+
 		$response = $this->generateRegisterFormHTML($message);
 		return $response;
 	}
@@ -27,10 +35,10 @@ class RegisterView {
 			<form method="post">
 				<fieldset>
 					<legend>Register a new user - Write username and password</legend>
-					<p id="' . self::$registerMessageId . '">' . $message . '</p>
+					<p id="' . self::$registerMessage . '">' . $message . '</p>
 			
 					<label for="' . self::$registerName . '">Username :</label>
-					<input type="text" name="' . self::$registerName . '" id="' . self::$registerName . '" value="">
+					<input type="text" name="' . self::$registerName . '" id="' . self::$registerName . '" value="' . $_REQUEST[self::$registerName] . '">
 					<br>
 			
 					<label for="' . self::$registerPassword . '">Password  :</label>
@@ -53,6 +61,11 @@ class RegisterView {
 		return isset($_REQUEST[self::$register]);
 	}
 
+	public function isMessage() 
+	{
+		return isset($_REQUEST[self::$registerMessage]);
+	}
+
 	public function getRequestUserName() 
 	{
 		return $_REQUEST[self::$registerName];
@@ -68,6 +81,15 @@ class RegisterView {
 		return $_REQUEST[self::$registerPasswordRepeat];
 	}
 
+	public function setRequestMessage(string $message) 
+	{
+		$_REQUEST[self::$registerMessage] = $message;
+	}
+
+	public function setLastUsernameInput(string $username) 
+	{
+		$_REQUEST[self::$registerName] = $username;
+	}
 }
 
 

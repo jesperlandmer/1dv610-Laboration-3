@@ -1,5 +1,7 @@
 <?php
 
+namespace model;
+
 require_once('Connection.php');
 
 class DatabaseHelper {
@@ -52,4 +54,3 @@ class DatabaseHelper {
     return $stmt;
   }
 }
-?>

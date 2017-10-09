@@ -2,12 +2,11 @@
 
 namespace view;
 
-require_once(__DIR__ . '/../model/UserObserver.php');
 require_once("LoginView.php");
 require_once("RegisterView.php");
 require_once("DateTimeView.php");
 
-class LayoutView implements \model\UserObserver {
+class LayoutView {
 
   private $isLoggedIn = false;
 
@@ -81,16 +80,4 @@ class LayoutView implements \model\UserObserver {
       return $this->loginView->response($this->isLoggedIn);
     }
   }
-
-	public function getRequestUserName(\model\PersistantUser $user) {
-		return $user->getUsername();
-  }
-
-  public function getRequestErrors(\model\PersistantUser $user) {
-		return $user->getErrorMessage();
-  }
-  
-  public function getRegister(\model\PersistantUser $user) {
-		return $user->getErrorMessage();
-	}
 }
