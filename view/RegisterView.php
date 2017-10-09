@@ -2,7 +2,7 @@
 
 namespace view;
 
-require_once(__DIR__ . '/../model/RegisterObserver.php');
+require_once(__DIR__ . '/../model/observers/RegisterObserver.php');
 
 class RegisterView implements \model\RegisterObserver {
 
@@ -10,7 +10,7 @@ class RegisterView implements \model\RegisterObserver {
 	private static $registerName = "RegisterView::UserName";
 	private static $registerPassword = "RegisterView::Password";
 	private static $registerPasswordRepeat = "RegisterView::PasswordRepeat";
-	private static $registerMessage = "RegisterView::Message";
+	private static $registerMessageId = "RegisterView::Message";
 
 	/**
 	 * @return  void BUT writes to standard output!
@@ -19,7 +19,7 @@ class RegisterView implements \model\RegisterObserver {
 	{
 		$message = "";
 		if ($this->isMessage()) {
-			$message = $_REQUEST[self::$registerMessage];
+			$message = $_REQUEST[self::$registerMessageId];
 		}
 
 		$response = $this->generateRegisterFormHTML($message);
@@ -35,7 +35,7 @@ class RegisterView implements \model\RegisterObserver {
 			<form method="post">
 				<fieldset>
 					<legend>Register a new user - Write username and password</legend>
-					<p id="' . self::$registerMessage . '">' . $message . '</p>
+					<p id="' . self::$registerMessageId . '">' . $message . '</p>
 			
 					<label for="' . self::$registerName . '">Username :</label>
 					<input type="text" name="' . self::$registerName . '" id="' . self::$registerName . '" value="' . $this->getRequestUserName() . '">
@@ -56,36 +56,59 @@ class RegisterView implements \model\RegisterObserver {
 		';
 	}
 
+	/**
+	* @return  void
+	*/
+	public function redirectToHomePage()
+	{
+		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
+		exit;
+	}
+	/**
+	* @return  boolean
+	*/
 	public function isRegister()
 	{
 		return isset($_REQUEST[self::$register]);
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function isMessage() 
 	{
-		return isset($_REQUEST[self::$registerMessage]);
+		return isset($_REQUEST[self::$registerMessageId]);
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function getRequestUserName() 
 	{
 		return (isset($_REQUEST[self::$registerName])) ? $_REQUEST[self::$registerName] : "";
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function getRequestPassword() 
 	{
 		return $_REQUEST[self::$registerPassword];
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function getRequestPasswordRepeat() 
 	{
 		return $_REQUEST[self::$registerPasswordRepeat];
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function setRequestMessage(string $message) 
 	{
-		$_REQUEST[self::$registerMessage] = $message;
+		$_REQUEST[self::$registerMessageId] = $message;
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function setLastUsernameInput(string $username) 
 	{
 		$_REQUEST[self::$registerName] = $username;

@@ -11,7 +11,8 @@ class Register {
 		$this->registerView = new \view\RegisterView();
 
 		if ($this->registerView->isRegister()) {
-			$this->user = new \model\User($this->registerView);
+			$this->user = new \model\User();
+			$this->user->newRegister($this->registerView);
 		}
 	}
 }

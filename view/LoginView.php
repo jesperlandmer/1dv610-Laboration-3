@@ -2,6 +2,8 @@
 
 namespace view;
 
+require_once(__DIR__ . '/../model/observers/RegisterObserver.php');
+
 class LoginView {
 	private static $login = "LoginView::Login";
 	private static $logout = "LoginView::Logout";
@@ -17,6 +19,11 @@ class LoginView {
 	 */
 	public function response(string $message) 
 	{
+		$message = "";
+		if ($this->isMessage()) {
+			$message = $_REQUEST[self::$messageId];
+		}
+
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
@@ -26,7 +33,7 @@ class LoginView {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLogoutButtonHTML($message) {
+	private function generateLogoutButtonHTML(string $message) {
 		return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
@@ -39,7 +46,7 @@ class LoginView {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLoginFormHTML($message) {
+	private function generateLoginFormHTML(string $message) {
 		return '
 			<form method="post" > 
 				<fieldset>
@@ -61,23 +68,61 @@ class LoginView {
 		';
 	}
 
+	/**
+	* @return  void
+	*/
+	public function redirectToLoggedInPage()
+	{
+		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
+		exit;
+	}
+	/**
+	* @return  boolean
+	*/
 	public function isLogin()
 	{
 		return isset($_REQUEST[self::$login]);
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function isLogout()
 	{
 		return isset($_REQUEST[self::$logout]);
 	}
-
+	/**
+	* @return  boolean
+	*/
+	public function isMessage() 
+	{
+		return isset($_REQUEST[self::$registerMessageId]);
+	}
+	/**
+	* @return  boolean
+	*/
 	public function getRequestUserName() 
 	{
 		return $_REQUEST[self::$name];
 	}
-
+	/**
+	* @return  boolean
+	*/
 	public function getRequestPassword() 
 	{
 		return $_REQUEST[self::$password];
+	}
+	/**
+	* @return  void
+	*/
+	public function setRequestMessage(string $message) 
+	{
+		$_REQUEST[self::$messageId] = $message;
+	}
+	/**
+	* @return  void
+	*/
+	public function setCookieCredentials(string $username, string $password)
+	{
+		return isset($_REQUEST[self::$login]);
 	}
 }

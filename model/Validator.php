@@ -15,37 +15,76 @@ class Validator
     private static $errorInvalidFormat = "Username contains invalid characters.";
     private static $errorNoUserFound = "Wrong name or password";
 
-    public function __construct(PersistantUser $user, \PDOStatement $dbResult)
+    public function validate(User $user) 
     {
-
-      if ($user->usernameHasMinLength() == false) {
-        $this->errorMessage .= self::$errorUsernameLength . "<br>";
-      }
-
-      if ($user->passwordHasMinLength() == false) {
-        $this->errorMessage .= self::$errorPasswordLength . "<br>";
-      }
-
-      if ($user->inputIsValidFormat() == false) {
-        $this->errorMessage .= self::$errorInvalidFormat . "<br>";
-      }
-
-      if ($this->isUniqueUsername($dbResult) == false) {
-        $this->errorMessage .= self::$errorUserExists . "<br>";
-      }
-
-      if ($user->repeatedPasswordMatch() == false) {
-        $this->errorMessage .= self::$errorPasswordMatch;
-      }
-
-      $user->setErrorMessage($this->errorMessage);
+      $this->user = $user;
+      
+            if ($this->usernameHasMinLength() == false) {
+              $this->errorMessage .= self::$errorUsernameLength . "<br>";
+            }
+      
+            if ($this->passwordHasMinLength() == false) {
+              $this->errorMessage .= self::$errorPasswordLength . "<br>";
+            }
+      
+            if ($this->inputIsValidFormat() == false) {
+              $this->errorMessage .= self::$errorInvalidFormat . "<br>";
+            }
+      
+            if ($this->isUniqueUsername() == false) {
+              $this->errorMessage .= self::$errorUserExists . "<br>";
+            }
+      
+            if ($this->repeatedPasswordMatch() == false) {
+              $this->errorMessage .= self::$errorPasswordMatch;
+            }
     }
 
     /**
      * @return boolean
      */
-    public function isUniqueUsername(\PDOStatement $dbResult)
+    public function usernameHasMinLength()
     {
-        return $dbResult->rowCount() == 0;
+        return strlen($this->user->getUsername()) >= 3;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function passwordHasMinLength()
+    {
+        return strlen($this->user->getPassword()) >= 6;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function inputIsValidFormat()
+    {
+        return filter_var($this->user->getUsername(), FILTER_SANITIZE_STRING) == $this->user->getUsername();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUniqueUsername()
+    {
+        return $this->user->getUserFromDatabase()->rowCount() == 0;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function repeatedPasswordMatch()
+    {
+        return $this->user->getPassword() == $this->user->getPasswordRepeat();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
     }
 }

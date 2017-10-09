@@ -2,7 +2,7 @@
 
 namespace model;
 
-class Connection {
+class PDOConnection {
 
   private $dbHost = "localhost";
   private $dbName = "users";

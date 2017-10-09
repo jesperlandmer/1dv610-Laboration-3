@@ -2,9 +2,9 @@
 
 namespace model;
 
-require_once(__DIR__ . '/../libs/Connection.php');
+require_once('PDOConnection.php');
 
-class PDOService extends Connection {
+class PDOService extends PDOConnection {
 
   /**
 	 * @return PDOStatement

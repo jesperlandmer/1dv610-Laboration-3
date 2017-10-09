@@ -9,22 +9,25 @@ class PersistantUser
     private static $passwordRepeat = "PersistantUser::passwordRepeat";
     private static $errorMessage = "PersistantUser::errorMessage";
 
-    public function __construct(string $inputUsername, string $inputPassword, string $inputPasswordRepeat)
+    public function __construct()
     {
         assert(isset($_SESSION));
         session_unset();
 
-        $this->newRegister($inputUsername, $inputPassword, $inputPasswordRepeat);
+        $this->validator = new Validator();
     }
 
     /**
      * @return void
      */
-    public function newRegister(string $username, string $password, string $passwordRepeat)
+    public function newRegister(User $user)
     {
-        $_SESSION[self::$username] = $username;
-        $_SESSION[self::$password] = $password;
-        $_SESSION[self::$passwordRepeat] = $passwordRepeat;
+        $this->validator->validate($user);
+
+        $_SESSION[self::$username] = $user->getUsername();
+        $_SESSION[self::$password] = $user->getPassword();
+        $_SESSION[self::$passwordRepeat] = $user->getPasswordRepeat();
+        $this->setErrorMessage($this->validator->getErrorMessage());
     }
 
     /**
@@ -34,17 +37,6 @@ class PersistantUser
     {
         return $_SESSION[self::$username];
     }
-
-    /**
-     * @return void
-     */
-    public function setErrorMessage($message)
-    {
-        if (isset($message) == true) {
-            $_SESSION[self::$errorMessage] = $message;
-        }
-    }
-
     /**
      * @return string
      */
@@ -56,44 +48,20 @@ class PersistantUser
             return "";
         }
     }
-
+    /**
+     * @return void
+     */
+    public function setErrorMessage($message)
+    {
+        if (isset($message) == true) {
+            $_SESSION[self::$errorMessage] = $message;
+        }
+    }
     /**
      * @return boolean
      */
     public function isErrors()
     {
         return isset($_SESSION[self::$errorMessage]);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function usernameHasMinLength()
-    {
-        return strlen($_SESSION[self::$username]) >= 3;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function passwordHasMinLength()
-    {
-        return strlen($_SESSION[self::$password]) >= 6;
-    }
-    
-    /**
-     * @return boolean
-     */
-    public function inputIsValidFormat()
-    {
-        return filter_var($_SESSION[self::$username], FILTER_SANITIZE_STRING) == $_SESSION[self::$username];
-    }
-
-    /**
-     * @return boolean
-     */
-    public static function repeatedPasswordMatch()
-    {
-        return $_SESSION[self::$password] == $_SESSION[self::$passwordRepeat];
     }
 }

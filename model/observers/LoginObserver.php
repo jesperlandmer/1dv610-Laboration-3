@@ -2,9 +2,10 @@
 
 namespace model;
 
-interface RegisterObserver {
+interface LoginObserver {
+	public function refreshPage();
 	public function getRequestUsername();
 	public function getRequestPassword();
-	public function getRequestPasswordRepeat();
+	public function setCookieCredentials(string $username, string $password);
 	public function setRequestMessage(string $message);
 }
