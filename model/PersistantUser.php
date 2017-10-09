@@ -2,8 +2,6 @@
 
 namespace model;
 
-require_once("DatabaseHelper.php");
-
 class PersistantUser
 {
     private static $username = "PersistantUser::username";

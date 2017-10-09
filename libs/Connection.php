@@ -29,7 +29,7 @@ class Connection {
   /**
 	 * @return PDO
 	 */
-  public function getDBConnection() {
+  protected function getDBConnection() {
 
     if ($this->dbConnect instanceof \PDO) {
      return $this->dbConnect;

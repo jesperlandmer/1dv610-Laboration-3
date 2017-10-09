@@ -2,7 +2,7 @@
 
 namespace model;
 
-require_once("DatabaseHelper.php");
+require_once("PDOService.php");
 require_once("PersistantUser.php");
 require_once("Validator.php");
 
@@ -18,7 +18,7 @@ class User {
     $this->password = $observer->getRequestPassword();
     $this->passwordRepeat = $observer->getRequestPasswordRepeat();
 
-    $this->dbHelper = new DatabaseHelper();
+    $this->dbHelper = new PDOService();
     $this->user = new PersistantUser($this->username, $this->password, $this->passwordRepeat);
     $this->validator = new Validator($this->user, $this->getUsernameFromDatabase());
 

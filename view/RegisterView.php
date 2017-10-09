@@ -38,7 +38,7 @@ class RegisterView implements \model\RegisterObserver {
 					<p id="' . self::$registerMessage . '">' . $message . '</p>
 			
 					<label for="' . self::$registerName . '">Username :</label>
-					<input type="text" name="' . self::$registerName . '" id="' . self::$registerName . '" value="' . $_REQUEST[self::$registerName] . '">
+					<input type="text" name="' . self::$registerName . '" id="' . self::$registerName . '" value="' . $this->getRequestUserName() . '">
 					<br>
 			
 					<label for="' . self::$registerPassword . '">Password  :</label>
@@ -68,7 +68,7 @@ class RegisterView implements \model\RegisterObserver {
 
 	public function getRequestUserName() 
 	{
-		return $_REQUEST[self::$registerName];
+		return (isset($_REQUEST[self::$registerName])) ? $_REQUEST[self::$registerName] : "";
 	}
 
 	public function getRequestPassword() 
