@@ -28,12 +28,28 @@ class PersistantUser
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
+     /**
+     * @return boolean
+     */
+    public function isUsername()
+    {
+        return isset($_SESSION[self::$username]);
+    }
+    /**
+     * @return boolean
+     */
+    public function isMessage()
+    {
+        return isset($_SESSION[self::$message]);
+    }
     /**
      * @return string
      */
     public function getUsername()
     {
-        return $_SESSION[self::$username];
+        if ($this->isUsername()) {
+            return $_SESSION[self::$username];
+        }
     }
     /**
      * @return string
@@ -43,13 +59,6 @@ class PersistantUser
         if ($this->isMessage()) {
             return $_SESSION[self::$message];
         }
-    }
-    /**
-     * @return boolean
-     */
-    public function isMessage()
-    {
-        return isset($_SESSION[self::$message]);
     }
     /**
      * @return boolean

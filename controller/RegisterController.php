@@ -9,8 +9,8 @@ class RegisterController {
 
 	public function __construct() 
 	{
-		$this->registerView = new \view\RegisterView();
 		$this->user = new \model\RegisterModel();
+		$this->registerView = new \view\RegisterView();
 
 		if ($this->registerView->isRegister()) {
 			$this->user->newRegister($this->registerView);

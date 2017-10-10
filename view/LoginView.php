@@ -15,14 +15,17 @@ class LoginView implements \model\LoginObserver {
 	private static $keep = "LoginView::KeepMeLoggedIn";
 	private static $messageId = "LoginView::Message";
 
+	public function __construct(\model\LoginModel $loginModel) 
+	{
+		$this->loginModel = $loginModel;
+	}
+
 	/**
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response(string $message) 
+	public function response() 
 	{
-		if ($this->isMessage()) {
-			$message = $this->getRequestMessage();
-		}
+		$message = $this->getMessage();
 
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
@@ -95,16 +98,47 @@ class LoginView implements \model\LoginObserver {
 	/**
 	* @return  boolean
 	*/
-	public function isMessage() 
+	public function isSessionUsername() 
+	{
+		return $this->loginModel->getNewRegisterUsername() != null;
+	}
+	/**
+	* @return  boolean
+	*/
+	public function isSessionMessage() 
+	{
+		return $this->loginModel->getNewRegisterMessage() != null;
+	}
+	/**
+	* @return  boolean
+	*/
+	public function isRequestMessage() 
 	{
 		return isset($_REQUEST[self::$messageId]);
+	}
+	/**
+	* @return  void
+	*/
+	public function getMessage() 
+	{
+		if ($this->isRequestMessage()) {
+			return $this->getRequestMessage();
+		} else if ($this->isSessionMessage()) {
+			return $this->loginModel->getNewRegisterMessage();
+		} else {
+			return "";
+		}
 	}
 	/**
 	* @return  string
 	*/
 	public function getRequestUserName()
 	{
-		return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
+		if ($this->isSessionUsername()) {
+			return $this->loginModel->getNewRegisterUsername();
+		} else {
+			return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
+		}
 	}
 	/**
 	* @return  string
@@ -112,13 +146,6 @@ class LoginView implements \model\LoginObserver {
 	public function getRequestPassword() 
 	{
 		return $_REQUEST[self::$password];
-	}
-	/**
-	* @return  void
-	*/
-	public function getRequestMessage() 
-	{
-		return $_REQUEST[self::$messageId];
 	}
 	/**
 	* @return  void

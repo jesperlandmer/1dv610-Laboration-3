@@ -58,7 +58,16 @@ class LoginModel {
    /**
    * @return void
    */
-  public function getStoredMessage()
+  public function getNewRegisterUsername()
+  {
+    if ($this->persistentUser->getUsername() != null) {
+        return $this->persistentUser->getUsername();
+    }
+  }
+   /**
+   * @return void
+   */
+  public function getNewRegisterMessage()
   {
     if ($this->persistentUser->getMessage() != null) {
         return $this->persistentUser->getMessage();
