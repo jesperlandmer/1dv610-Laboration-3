@@ -2,9 +2,19 @@
 
 namespace view;
 
-require_once(__DIR__ . '/../model/observers/RegisterObserver.php');
+require_once('RegisterView.php');
+require_once(__DIR__ . '/../model/observers/LoginObserver.php');
 
-class LoginView {
+class LoginView implements \model\LoginObserver {
+	const ErrorUsernameLength = "Username has too few characters, at least 3 characters. <br>";
+    const ErrorPasswordLength = "Password has too few characters, at least 6 characters. <br>";
+    const ErrorPasswordMatch = "Passwords do not match. <br>";
+    const ErrorUserExists = "User exists, pick another username. <br>";
+    const ErrorInvalidFormat = "Username contains invalid characters. <br>";
+    const ErrorNoUserFound = "Wrong name or password <br>";
+    
+	const RegisterSuccessful = "Registered new user.";
+	
 	private static $login = "LoginView::Login";
 	private static $logout = "LoginView::Logout";
 	private static $name = "LoginView::UserName";
@@ -17,11 +27,13 @@ class LoginView {
 	/**
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response(string $message) 
+	public function response() 
 	{
+		$registerView = new \view\RegisterView();
+		
 		$message = "";
 		if ($this->isMessage()) {
-			$message = $_REQUEST[self::$messageId];
+			$message = $this->getRequestMessage();
 		}
 
 		$response = $this->generateLoginFormHTML($message);
@@ -54,7 +66,7 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . $this->getRequestUserName() . '" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
@@ -71,7 +83,7 @@ class LoginView {
 	/**
 	* @return  void
 	*/
-	public function redirectToLoggedInPage()
+	public function refreshPage()
 	{
 		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
 		exit;
@@ -95,21 +107,28 @@ class LoginView {
 	*/
 	public function isMessage() 
 	{
-		return isset($_REQUEST[self::$registerMessageId]);
+		return isset($_REQUEST[self::$messageId]);
 	}
 	/**
-	* @return  boolean
+	* @return  string
 	*/
-	public function getRequestUserName() 
+	public function getRequestUserName()
 	{
-		return $_REQUEST[self::$name];
+		return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
 	}
 	/**
-	* @return  boolean
+	* @return  string
 	*/
 	public function getRequestPassword() 
 	{
 		return $_REQUEST[self::$password];
+	}
+	/**
+	* @return  void
+	*/
+	public function getRequestMessage() 
+	{
+		return $_REQUEST[self::$messageId];
 	}
 	/**
 	* @return  void
@@ -119,10 +138,17 @@ class LoginView {
 		$_REQUEST[self::$messageId] = $message;
 	}
 	/**
-	* @return  void
+	* @return  boolean
 	*/
 	public function setCookieCredentials(string $username, string $password)
 	{
 		return isset($_REQUEST[self::$login]);
+	}
+	/**
+	* @return  void
+	*/
+	public function setLastUsernameInput(string $username) 
+	{
+		$_REQUEST[self::$name] = $username;
 	}
 }

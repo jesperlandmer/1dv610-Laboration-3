@@ -19,9 +19,9 @@ class RegisterView implements \model\RegisterObserver {
 	{
 		$message = "";
 		if ($this->isMessage()) {
-			$message = $_REQUEST[self::$registerMessageId];
+			$message = $this->getRequestMessage();
 		}
-
+		
 		$response = $this->generateRegisterFormHTML($message);
 		return $response;
 	}
@@ -74,40 +74,54 @@ class RegisterView implements \model\RegisterObserver {
 	/**
 	* @return  boolean
 	*/
+	public function isRequestUserName()
+	{
+		return isset($_REQUEST[self::$registerName]);
+	}
+	/**
+	* @return  boolean
+	*/
 	public function isMessage() 
 	{
 		return isset($_REQUEST[self::$registerMessageId]);
 	}
 	/**
-	* @return  boolean
+	* @return  string
 	*/
 	public function getRequestUserName() 
 	{
 		return (isset($_REQUEST[self::$registerName])) ? $_REQUEST[self::$registerName] : "";
 	}
 	/**
-	* @return  boolean
+	* @return  string
 	*/
 	public function getRequestPassword() 
 	{
 		return $_REQUEST[self::$registerPassword];
 	}
 	/**
-	* @return  boolean
+	* @return  string
 	*/
 	public function getRequestPasswordRepeat() 
 	{
 		return $_REQUEST[self::$registerPasswordRepeat];
 	}
 	/**
-	* @return  boolean
+	* @return  void
+	*/
+	public function getRequestMessage()
+	{
+		return $_REQUEST[self::$registerMessageId];
+	}
+	/**
+	* @return  void
 	*/
 	public function setRequestMessage(string $message) 
 	{
 		$_REQUEST[self::$registerMessageId] = $message;
 	}
 	/**
-	* @return  boolean
+	* @return  void
 	*/
 	public function setLastUsernameInput(string $username) 
 	{

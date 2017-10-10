@@ -6,37 +6,30 @@ require_once("PersistantUser.php");
 
 class Validator
 {
-    private $errorMessage;
+    private $message;
 
-    private static $errorUsernameLength = "Username has too few characters, at least 3 characters.";
-    private static $errorPasswordLength = "Password has too few characters, at least 6 characters.";
-    private static $errorPasswordMatch = "Passwords do not match.";
-    private static $errorUserExists = "User exists, pick another username.";
-    private static $errorInvalidFormat = "Username contains invalid characters.";
-    private static $errorNoUserFound = "Wrong name or password";
-
-    public function validate(User $user) 
+    public function validate(RegisterModel $user) 
     {
       $this->user = $user;
       
             if ($this->usernameHasMinLength() == false) {
-              $this->errorMessage .= self::$errorUsernameLength . "<br>";
+              $this->message .= \view\MessageView::ErrorUsernameLength;
             }
       
             if ($this->passwordHasMinLength() == false) {
-              $this->errorMessage .= self::$errorPasswordLength . "<br>";
+              $this->message .= \view\MessageView::ErrorPasswordLength;
             }
       
             if ($this->inputIsValidFormat() == false) {
-              $this->errorMessage .= self::$errorInvalidFormat . "<br>";
+              $this->message .= \view\MessageView::ErrorInvalidFormat;
             }
       
             if ($this->isUniqueUsername() == false) {
-              $this->errorMessage .= self::$errorUserExists . "<br>";
+              $this->message .= \view\MessageView::ErrorUserExists;
             }
       
             if ($this->repeatedPasswordMatch() == false) {
-              $this->errorMessage .= self::$errorPasswordMatch;
+              $this->message .= \view\MessageView::ErrorPasswordMatch;
             }
     }
 
@@ -83,8 +76,8 @@ class Validator
     /**
      * @return boolean
      */
-    public function getErrorMessage()
+    public function getMessage()
     {
-        return $this->errorMessage;
+        return (isset($this->message)) ? $this->message : "";
     }
 }

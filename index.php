@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+session_unset();
 
 // ACTIVATE ERROR SHOWING
 error_reporting(E_ALL);
@@ -9,11 +10,7 @@ ini_set('display_errors', 'On');
 // SET TIME ZONE
 date_default_timezone_set('Europe/Stockholm');
 
-require_once('controller/Register.php');
+require_once('controller/MasterController.php');
 
-require_once('view/LayoutView.php');
-
-$layOutView = new \view\LayoutView(false);
-$register = new \controller\Register();
-
-$layOutView->render();
+$masterController = new \controller\MasterController();
+$masterController->showPage();

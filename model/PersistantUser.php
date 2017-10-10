@@ -4,30 +4,28 @@ namespace model;
 
 class PersistantUser
 {
-    private static $username = "PersistantUser::username";
-    private static $password = "PersistantUser::password";
-    private static $passwordRepeat = "PersistantUser::passwordRepeat";
-    private static $errorMessage = "PersistantUser::errorMessage";
+    private static $username = "PersistantUser::Username";
+    private static $password = "PersistantUser::Password";
+    private static $passwordRepeat = "PersistantUser::PasswordRepeat";
+    private static $message = "PersistantUser::Message";
 
     public function __construct()
     {
         assert(isset($_SESSION));
-        session_unset();
-
         $this->validator = new Validator();
     }
 
     /**
      * @return void
      */
-    public function newRegister(User $user)
+    public function newRegister(RegisterModel $user)
     {
         $this->validator->validate($user);
 
         $_SESSION[self::$username] = $user->getUsername();
         $_SESSION[self::$password] = $user->getPassword();
         $_SESSION[self::$passwordRepeat] = $user->getPasswordRepeat();
-        $this->setErrorMessage($this->validator->getErrorMessage());
+        $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
     /**
@@ -40,28 +38,15 @@ class PersistantUser
     /**
      * @return string
      */
-    public function getErrorMessage()
+    public function getMessage()
     {
-        if ($this->isErrors()) {
-            return $_SESSION[self::$errorMessage];
-        } else {
-            return "";
-        }
-    }
-    /**
-     * @return void
-     */
-    public function setErrorMessage($message)
-    {
-        if (isset($message) == true) {
-            $_SESSION[self::$errorMessage] = $message;
-        }
+        return $_SESSION[self::$message];
     }
     /**
      * @return boolean
      */
     public function isErrors()
     {
-        return isset($_SESSION[self::$errorMessage]);
+        return strlen($_SESSION[self::$message]) != 0;
     }
 }

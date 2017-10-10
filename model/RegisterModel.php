@@ -6,11 +6,9 @@ require_once("dbHelpers/PDOService.php");
 require_once("PersistantUser.php");
 require_once("Validator.php");
 
-class User {
+class RegisterModel {
 
-  private $username;
-  private $password;
-  private $passwordRepeat;
+  private $registerObserver;
 
   public function __construct() 
   {
@@ -31,80 +29,26 @@ class User {
   /**
    * @return void
    */
-  public function newLogin(LoginObserver $observer) 
-  {
-    $this->setLoginCredentials($observer);
-    $this->persistentUser->newLogin($this);
-    $this->executeLogin($observer);
-  }
-
-  /**
-   * @return string
-   */
-  public function getUsername() 
-  {
-    return $this->username;
-  }
-  /**
-   * @return string
-   */
-  public function getPassword() 
-  {
-    return $this->password;
-  }
-  /**
-   * @return string
-   */
-  public function getPasswordRepeat() 
-  {
-    assert(isset($this->passwordRepeat));
-    return $this->passwordRepeat;
-  }
-
-  /**
-   * @return void
-   */
   public function setRegisterCredentials(RegisterObserver $input) 
   {
     $this->username = $input->getRequestUsername();
     $this->password = $input->getRequestPassword();
     $this->passwordRepeat = $input->getRequestPasswordRepeat();
   }
-  /**
-   * @return void
-   */
-  public function setLoginCredentials(LoginObserver $input) 
-  {
-    $this->username = $input->getRequestUsername();
-    $this->password = $input->getRequestPassword();
-  }
 
-    /**
+  /**
    * @return void
    */
   public function executeRegister(RegisterObserver $view) 
   {
     if ($this->persistentUser->isErrors() == false) {
       $this->saveUserToDatabase();
-      $view->refreshPage();
+      $view->setRequestMessage(\view\MessageView::RegisterSuccessful);
+      $view->redirectToHomePage();
     } else {
       $this->handleError($view);
     }
   }
-  /**
-   * @return void
-   */
-  public function executeLogin(LoginObserver $view) 
-  {
-    if ($this->persistentUser->isErrors() == false) {
-      $view->setCookieCredentials($this->username, $this->password);
-      $view->redirectToLoggedInPage();
-
-    } else {
-      $this->handleError($view);
-    }
-  }
-
   /**
    * @return void
    */
@@ -134,12 +78,34 @@ class User {
   }
 
   /**
+   * @return string
+   */
+  public function getUsername() 
+  {
+    return $this->username;
+  }
+  /**
+   * @return string
+   */
+  public function getPassword() 
+  {
+    return $this->password;
+  }
+  /**
+   * @return string
+   */
+  public function getPasswordRepeat() 
+  {
+    assert(isset($this->passwordRepeat));
+    return $this->passwordRepeat;
+  }
+  /**
    * @param Type RegisterObserver OR LoginObserver - Both handle error output same way
    * @return void
    */
   public function handleError($view)
   {
     $view->setLastUsernameInput($this->username);
-    $view->setRequestMessage($this->persistentUser->getErrorMessage());
+    $view->setRequestMessage($this->persistentUser->getMessage());
   }
 }
