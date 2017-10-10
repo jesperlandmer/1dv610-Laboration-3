@@ -11,7 +11,7 @@ class LayoutView {
 
   public function __construct() 
   {
-    $this->messageView = new MessageView();
+    new MessageView();
     $this->dateTimeView = new DateTimeView();
   }
   

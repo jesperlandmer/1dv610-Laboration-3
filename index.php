@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-session_unset();
 
 // ACTIVATE ERROR SHOWING
 error_reporting(E_ALL);
@@ -14,3 +13,5 @@ require_once('controller/MasterController.php');
 
 $masterController = new \controller\MasterController();
 $masterController->showPage();
+
+session_unset();

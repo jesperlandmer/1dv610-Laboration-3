@@ -2,19 +2,10 @@
 
 namespace view;
 
-require_once('RegisterView.php');
 require_once(__DIR__ . '/../model/observers/LoginObserver.php');
 
 class LoginView implements \model\LoginObserver {
-	const ErrorUsernameLength = "Username has too few characters, at least 3 characters. <br>";
-    const ErrorPasswordLength = "Password has too few characters, at least 6 characters. <br>";
-    const ErrorPasswordMatch = "Passwords do not match. <br>";
-    const ErrorUserExists = "User exists, pick another username. <br>";
-    const ErrorInvalidFormat = "Username contains invalid characters. <br>";
-    const ErrorNoUserFound = "Wrong name or password <br>";
-    
-	const RegisterSuccessful = "Registered new user.";
-	
+
 	private static $login = "LoginView::Login";
 	private static $logout = "LoginView::Logout";
 	private static $name = "LoginView::UserName";
@@ -27,11 +18,8 @@ class LoginView implements \model\LoginObserver {
 	/**
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() 
+	public function response(string $message) 
 	{
-		$registerView = new \view\RegisterView();
-		
-		$message = "";
 		if ($this->isMessage()) {
 			$message = $this->getRequestMessage();
 		}
@@ -45,7 +33,8 @@ class LoginView implements \model\LoginObserver {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLogoutButtonHTML(string $message) {
+	private function generateLogoutButtonHTML(string $message) 
+	{
 		return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
@@ -58,7 +47,8 @@ class LoginView implements \model\LoginObserver {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLoginFormHTML(string $message) {
+	private function generateLoginFormHTML(string $message) 
+	{
 		return '
 			<form method="post" > 
 				<fieldset>

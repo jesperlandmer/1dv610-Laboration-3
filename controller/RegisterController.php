@@ -10,13 +10,16 @@ class RegisterController {
 	public function __construct() 
 	{
 		$this->registerView = new \view\RegisterView();
+		$this->user = new \model\RegisterModel();
 
 		if ($this->registerView->isRegister()) {
-			$this->user = new \model\RegisterModel();
 			$this->user->newRegister($this->registerView);
 		}
 	}
 
+	/**
+     * @return string
+     */
 	public function showRegisterPage()
 	{
 		return $this->registerView->response();

@@ -8,7 +8,9 @@ require_once("Validator.php");
 
 class RegisterModel {
 
-  private $registerObserver;
+  private $username;
+  private $password;
+  private $passwordRepeat;
 
   public function __construct() 
   {
@@ -43,7 +45,6 @@ class RegisterModel {
   {
     if ($this->persistentUser->isErrors() == false) {
       $this->saveUserToDatabase();
-      $view->setRequestMessage(\view\MessageView::RegisterSuccessful);
       $view->redirectToHomePage();
     } else {
       $this->handleError($view);
@@ -72,14 +73,6 @@ class RegisterModel {
   /**
    * @return string
    */
-  private function getHashedPassword() 
-  {
-    return password_hash("$this->password", PASSWORD_BCRYPT, ["cost" => 8]);
-  }
-
-  /**
-   * @return string
-   */
   public function getUsername() 
   {
     return $this->username;
@@ -99,6 +92,14 @@ class RegisterModel {
     assert(isset($this->passwordRepeat));
     return $this->passwordRepeat;
   }
+  /**
+   * @return string
+   */
+  private function getHashedPassword() 
+  {
+    return password_hash("$this->password", PASSWORD_BCRYPT, ["cost" => 8]);
+  }
+
   /**
    * @param Type RegisterObserver OR LoginObserver - Both handle error output same way
    * @return void

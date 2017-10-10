@@ -3,6 +3,7 @@
 namespace model;
 
 require_once("dbHelpers/PDOService.php");
+require_once("PersistantUser.php");
 
 class LoginModel {
 
@@ -12,6 +13,7 @@ class LoginModel {
   public function __construct() 
   {
     $this->dbHelper = new PDOService();
+    $this->persistentUser = new PersistantUser();
   }
 
   /**
@@ -31,7 +33,6 @@ class LoginModel {
     $this->username = $input->getRequestUsername();
     $this->password = $input->getRequestPassword();
   }
-
   /**
    * @return void
    */
@@ -44,7 +45,6 @@ class LoginModel {
       $this->handleError($view);
     }
   }
-
   /**
    * @return void
    */
@@ -55,6 +55,15 @@ class LoginModel {
     ));
   }
 
+   /**
+   * @return void
+   */
+  public function getStoredMessage()
+  {
+    if ($this->persistentUser->getMessage() != null) {
+        return $this->persistentUser->getMessage();
+    }
+  }
   /**
    * @param Type RegisterObserver OR LoginObserver - Both handle error output same way
    * @return void

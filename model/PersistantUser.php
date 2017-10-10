@@ -40,13 +40,22 @@ class PersistantUser
      */
     public function getMessage()
     {
-        return $_SESSION[self::$message];
+        if ($this->isMessage()) {
+            return $_SESSION[self::$message];
+        }
+    }
+    /**
+     * @return boolean
+     */
+    public function isMessage()
+    {
+        return isset($_SESSION[self::$message]);
     }
     /**
      * @return boolean
      */
     public function isErrors()
     {
-        return strlen($_SESSION[self::$message]) != 0;
+        return $_SESSION[self::$message] != \view\MessageView::RegisterSuccessful;
     }
 }

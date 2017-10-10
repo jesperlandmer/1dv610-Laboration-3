@@ -76,8 +76,19 @@ class Validator
     /**
      * @return boolean
      */
+    public function isMessage()
+    {
+        return isset($this->message);
+    }
+    /**
+     * @return string
+     */
     public function getMessage()
     {
-        return (isset($this->message)) ? $this->message : "";
+        if ($this->isMessage()) {
+            return $this->message;
+        } else {
+            return \view\MessageView::RegisterSuccessful;
+        }
     }
 }
