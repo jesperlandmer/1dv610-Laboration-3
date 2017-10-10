@@ -22,7 +22,6 @@ class LoginModel {
   public function newLogin(LoginObserver $observer) 
   {
     $this->setLoginCredentials($observer);
-    $this->persistentUser->newLogin($this);
     $this->executeLogin($observer);
   }
   /**
@@ -38,25 +37,66 @@ class LoginModel {
    */
   public function executeLogin(LoginObserver $view) 
   {
-    if ($this->persistentUser->isErrors() == false) {
-      $view->setCookieCredentials($this->username, $this->password);
-      $view->refreshPage();
+    if ($this->isUsernameInput() == false) {
+        $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
+
+    } else if ($this->isPasswordInput() == false) {
+        $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
+        
+    } else if ($this->isCorrectUsername() == false) {
+        $view->setLastUsernameInput($this->username);
+        $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
+
+    } else if ($this->isCorrectPassword() == false) {
+        $view->setLastUsernameInput($this->username);
+        $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
+
     } else {
-      $this->handleError($view);
+        $view->refreshPage();
     }
   }
+
+   /**
+   * @return boolean
+   */
+  public function isUsernameInput()
+  {
+      return strlen($this->username) > 0;
+  }
+   /**
+   * @return boolean
+   */
+  public function isPasswordInput()
+  {
+      return strlen($this->password) > 0;
+  }
+   /**
+   * @return boolean
+   */
+  public function isCorrectUsername()
+  {
+      return $this->getUserFromDatabase()->rowCount() > 0;
+  }
+   /**
+   * @return boolean
+   */
+  public function isCorrectPassword()
+  {
+      return password_verify($this->password, $this->getUserFromDatabase()->fetch()["password"]);
+  }
+
   /**
-   * @return void
+   * @return PDOStatement
    */
   public function getUserFromDatabase() 
   {
     return $this->dbHelper->findData(array(
-      'username' => $this->username
+      "username" => $this->username
     ));
   }
 
    /**
-   * @return void
+   * @return string
    */
   public function getNewRegisterUsername()
   {
@@ -65,21 +105,12 @@ class LoginModel {
     }
   }
    /**
-   * @return void
+   * @return string
    */
   public function getNewRegisterMessage()
   {
     if ($this->persistentUser->getMessage() != null) {
         return $this->persistentUser->getMessage();
     }
-  }
-  /**
-   * @param Type RegisterObserver OR LoginObserver - Both handle error output same way
-   * @return void
-   */
-  public function handleError($view)
-  {
-    $view->setLastUsernameInput($this->username);
-    $view->setRequestMessage($this->persistentUser->getMessage());
   }
 }

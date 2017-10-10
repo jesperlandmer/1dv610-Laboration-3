@@ -23,8 +23,6 @@ class PersistantUser
         $this->validator->validate($user);
 
         $_SESSION[self::$username] = $user->getUsername();
-        $_SESSION[self::$password] = $user->getPassword();
-        $_SESSION[self::$passwordRepeat] = $user->getPasswordRepeat();
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 

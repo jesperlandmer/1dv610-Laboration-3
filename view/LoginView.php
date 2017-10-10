@@ -150,6 +150,13 @@ class LoginView implements \model\LoginObserver {
 	/**
 	* @return  void
 	*/
+	public function getRequestMessage() 
+	{
+		return $_REQUEST[self::$messageId];
+	}
+	/**
+	* @return  void
+	*/
 	public function setRequestMessage(string $message) 
 	{
 		$_REQUEST[self::$messageId] = $message;

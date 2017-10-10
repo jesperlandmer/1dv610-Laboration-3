@@ -12,7 +12,7 @@ class LoginController {
 		$this->loginView = new \view\LoginView($this->loginModel);
 
 		if ($this->loginView->isLogin()) {
-			$this->poopi = new \model\LoginModel();
+			$this->loginModel->newLogin($this->loginView);
 		}
 	}
 
