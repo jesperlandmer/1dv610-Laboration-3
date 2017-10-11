@@ -60,6 +60,7 @@ class LoginModel {
 
     } else {
         $view->setCookieCredentials($this->username, $this->password);
+        $this->persistentUser->setMessage(\view\MessageView::LoginSuccessful);
         $view->refreshPage();
     }
   }

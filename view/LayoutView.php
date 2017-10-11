@@ -9,7 +9,7 @@ class LayoutView {
 
   private $isLoggedIn = false;
 
-  public function __construct(bool $loggedInStatus) 
+  public function __construct(bool $loggedInStatus)
   {
     $this->isLoggedIn = $loggedInStatus;
     $this->messageView = new MessageView();

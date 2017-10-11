@@ -66,6 +66,13 @@ class PersistantUser
         }
     }
     /**
+     * @return string
+     */
+    public function setMessage(string $message)
+    {
+        $_SESSION[self::$message] = $message;
+    }
+    /**
      * @return boolean
      */
     public function isErrors()
