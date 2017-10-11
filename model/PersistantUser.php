@@ -22,10 +22,17 @@ class PersistantUser
     {
         $this->validator->validate($user);
 
-        $_SESSION[self::$username] = $user->getUsername();
+        $_SESSION[self::$username] = $this->filterString($user->getUsername());
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
+    /**
+     * @return string
+     */
+    public function filterString(string $input)
+    {
+        return filter_var($input, FILTER_SANITIZE_STRING);
+    }
      /**
      * @return boolean
      */

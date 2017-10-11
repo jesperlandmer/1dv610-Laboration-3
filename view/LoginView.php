@@ -179,8 +179,6 @@ class LoginView implements \model\LoginObserver {
 	{
 		if ($this->isCookieCredentials()) {
 			return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
-		} else {
-			return false;
 		}
 	}
 	/**
