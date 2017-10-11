@@ -106,7 +106,7 @@ class RegisterModel {
    */
   public function handleError($view)
   {
-    $view->setLastUsernameInput($this->username);
+    $view->setLastUsernameInput($this->persistentUser->getUsername());
     $view->setRequestMessage($this->persistentUser->getMessage());
   }
 }
