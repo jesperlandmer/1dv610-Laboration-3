@@ -15,7 +15,7 @@ class LoginController {
 			$this->loginModel->newLogin($this->loginView);
 		}
 
-		if ($this->loginView->isLogOut()) {
+		if ($this->loginView->isLogOut() && $this->loginView->isCookieLoggedInUser()) {
 			$this->loginModel->executeLogout($this->loginView);
 		}
 	}
