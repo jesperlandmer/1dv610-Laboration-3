@@ -22,6 +22,6 @@ class RegisterController {
      */
 	public function showRegisterPage()
 	{
-		return $this->registerView->response();
+		return $this->registerView->showResponse();
 	}
 }

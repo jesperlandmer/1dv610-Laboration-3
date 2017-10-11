@@ -14,6 +14,11 @@ class LoginController {
 		if ($this->loginView->isLogin()) {
 			$this->loginModel->newLogin($this->loginView);
 		}
+
+		if ($this->loginView->isLogOut()) {
+			$this->loginView->clearCookies();
+			$this->loginView->refreshPage();
+		}
 	}
 
 	/**
@@ -21,6 +26,13 @@ class LoginController {
      */
 	public function showLoginPage()
 	{
-		return $this->loginView->response();
+		return $this->loginView->showResponse();
+	}
+	/**
+     * @return boolean
+     */
+	public function getLoginStatus()
+	{
+		return $this->loginView->isCookieLoggedInUser();
 	}
 }

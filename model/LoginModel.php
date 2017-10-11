@@ -24,6 +24,17 @@ class LoginModel {
     $this->setLoginCredentials($observer);
     $this->executeLogin($observer);
   }
+   /**
+   * @return boolean
+   */
+  public function isLoggedIn(string $username, string $password)
+  {
+    $this->username = $username;
+    $this->password = $password;
+
+    return $this->isExistingUser();
+  }
+
   /**
    * @return void
    */
@@ -43,15 +54,12 @@ class LoginModel {
     } else if ($this->isPasswordInput() == false) {
         $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
         
-    } else if ($this->isCorrectUsername() == false) {
-        $view->setLastUsernameInput($this->username);
-        $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
-
-    } else if ($this->isCorrectPassword() == false) {
+    } else if ($this->isExistingUser() == false) {
         $view->setLastUsernameInput($this->username);
         $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
 
     } else {
+        $view->setCookieCredentials($this->username, $this->password);
         $view->refreshPage();
     }
   }
@@ -73,14 +81,7 @@ class LoginModel {
    /**
    * @return boolean
    */
-  public function isCorrectUsername()
-  {
-      return $this->getUserFromDatabase()->rowCount() > 0;
-  }
-   /**
-   * @return boolean
-   */
-  public function isCorrectPassword()
+  public function isExistingUser()
   {
       return password_verify($this->password, $this->getUserFromDatabase()->fetch()["password"]);
   }

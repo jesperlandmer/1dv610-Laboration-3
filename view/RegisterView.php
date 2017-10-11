@@ -15,7 +15,7 @@ class RegisterView implements \model\RegisterObserver {
 	/**
 	 * @return  void BUT writes to standard output!
 	 */
-	public function response() 
+	public function showResponse() 
 	{
 		$message = "";
 		if ($this->isMessage()) {

@@ -10,9 +10,9 @@ class MasterController {
 
     public function __construct() 
     {
-        $this->layoutView = new \view\LayoutView();
         $this->registerController = new \controller\RegisterController();
         $this->loginController = new \controller\LoginController();
+        $this->layoutView = new \view\LayoutView($this->loginController->getLoginStatus());
     }
     
     /**

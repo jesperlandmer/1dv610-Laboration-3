@@ -9,13 +9,14 @@ class LayoutView {
 
   private $isLoggedIn = false;
 
-  public function __construct() 
+  public function __construct(bool $loggedInStatus) 
   {
-    new MessageView();
+    $this->isLoggedIn = $loggedInStatus;
+    $this->messageView = new MessageView();
     $this->dateTimeView = new DateTimeView();
   }
   
-  public function render($formResponse) 
+  public function render($pageView) 
   {
     echo '<!DOCTYPE html>
       <html>
@@ -26,10 +27,10 @@ class LayoutView {
         <body>
           <h1>Assignment 2</h1>
           ' . $this->renderTopLink() . '
-          ' . $this->renderIsLoggedIn(false) . '
+          ' . $this->renderIsLoggedIn() . '
           
           <div class="container">
-              ' . $formResponse . '
+              ' . $pageView . '
               
               ' . $this->dateTimeView->showDateTimeFormat() . '
           </div>
@@ -61,9 +62,9 @@ class LayoutView {
   /**
 	 * @return string
 	 */
-  private function renderIsLoggedIn($isLoggedIn) 
+  private function renderIsLoggedIn() 
   {
-    if ($isLoggedIn) {
+    if ($this->isLoggedIn) {
       return '<h2>Logged in</h2>';
     }
     else {

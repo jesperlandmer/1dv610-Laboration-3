@@ -23,12 +23,15 @@ class LoginView implements \model\LoginObserver {
 	/**
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() 
+	public function showResponse() 
 	{
 		$message = $this->getMessage();
-
 		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
+
+		if ($this->isCookieLoggedInUser()) {
+			$response = $this->generateLogoutButtonHTML($message);
+		}
+
 		return $response;
 	}
 
@@ -161,13 +164,42 @@ class LoginView implements \model\LoginObserver {
 	{
 		$_REQUEST[self::$messageId] = $message;
 	}
+
 	/**
 	* @return  boolean
 	*/
+	public function isCookieCredentials()
+	{
+		return (isset($_COOKIE[self::$cookieName]) && isset($_COOKIE[self::$cookiePassword]));
+	}
+	/**
+	* @return  void
+	*/
+	public function isCookieLoggedInUser()
+	{
+		if ($this->isCookieCredentials()) {
+			return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
+		} else {
+			return false;
+		}
+	}
+	/**
+	* @return  void
+	*/
 	public function setCookieCredentials(string $username, string $password)
 	{
-		return isset($_REQUEST[self::$login]);
+		setcookie(self::$cookieName, $username, time() + (86400 * 30), "/");
+		setcookie(self::$cookiePassword, $password, time() + (86400 * 30), "/");
 	}
+	/**
+	* @return  boolean
+	*/
+	public function clearCookies()
+	{
+		setcookie(self::$cookieName, '', time() - 3600);
+		setcookie(self::$cookiePassword, '', time() - 3600);
+	}
+
 	/**
 	* @return  void
 	*/
