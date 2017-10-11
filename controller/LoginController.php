@@ -16,8 +16,7 @@ class LoginController {
 		}
 
 		if ($this->loginView->isLogOut()) {
-			$this->loginView->clearCookies();
-			$this->loginView->refreshPage();
+			$this->loginModel->executeLogout($this->loginView);
 		}
 	}
 

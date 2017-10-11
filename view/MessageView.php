@@ -16,4 +16,5 @@ class MessageView
     
     const RegisterSuccessful = "Registered new user.";
     const LoginSuccessful = "Welcome";
+    const LogoutSuccessful = "Bye bye!";
 }

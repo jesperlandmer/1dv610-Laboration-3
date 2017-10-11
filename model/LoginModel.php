@@ -43,6 +43,7 @@ class LoginModel {
     $this->username = $input->getRequestUsername();
     $this->password = $input->getRequestPassword();
   }
+
   /**
    * @return void
    */
@@ -63,6 +64,16 @@ class LoginModel {
         $this->persistentUser->setMessage(\view\MessageView::LoginSuccessful);
         $view->refreshPage();
     }
+  }
+
+   /**
+   * @return void
+   */
+  public function executeLogout(LoginObserver $view) 
+  {
+    $view->clearCookies();
+    $this->persistentUser->setMessage(\view\MessageView::LogoutSuccessful);
+    $view->refreshPage();
   }
 
    /**
