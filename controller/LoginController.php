@@ -11,22 +11,17 @@ class LoginController {
 		$this->loginModel = new \model\LoginModel();
 		$this->loginView = new \view\LoginView($this->loginModel);
 
-		if (strlen($this->loginModel->getStoredUsername()) > 0) {
-			$this->loginView->setRequestUsername($this->loginModel->getStoredUsername());
-		}
-		$this->loginView->setRequestMessage($this->loginModel->getStoredMessage());
-
 		if ($this->loginView->isLogin()) {
-			$this->loginModel->newLogin($this->loginView);
-		}
-
-		if ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials()) {
-			$this->loginModel->executeLogout($this->loginView);
+			$this->doLogin();
+		} else if ($this->isLogOut) {
+			$this->doLogOut();
 		}
 	}
 
 	public function showLoginPage(bool $loginStatus) : string
 	{
+		$this->setStoredUsername();
+		$this->setStoredMessage();
 		return $this->loginView->showResponse($loginStatus);
 	}
 
@@ -37,5 +32,32 @@ class LoginController {
 		} else {
 			return false;
 		}
+	}
+
+	private function setStoredUsername()
+	{
+		if (strlen($this->loginModel->getStoredUsername()) > 0) {
+			$this->loginView->setRequestUsername($this->loginModel->getStoredUsername());
+		}
+	}
+
+	private function setStoredMessage()
+	{
+		$this->loginView->setRequestMessage($this->loginModel->getStoredMessage());
+	}
+
+	private function doLogin() 
+	{
+		$this->loginModel->newLogin($this->loginView);
+	}
+
+	private function doLogout() 
+	{
+		$this->loginModel->executeLogout($this->loginView);
+	}
+
+	private function isLogOut()
+	{
+		return ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials())
 	}
 }
