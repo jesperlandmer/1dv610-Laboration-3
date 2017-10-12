@@ -20,26 +20,22 @@ class LoginView implements \model\LoginObserver {
 		$this->loginModel = $loginModel;
 	}
 
-	/**
-	 * @return  void BUT writes to standard output and cookies!
-	 */
-	public function showResponse() 
+	public function showResponse(bool $isLoggedIn) : string
 	{
-		$message = $this->getMessage();
+		$message = "";
+		if ($this->isRequestMessage()) {
+			$message = $this->getRequestMessage();
+		}
 		$response = $this->generateLoginFormHTML($message);
 
-		if ($this->isCookieLoggedInUser()) {
+		if ($isLoggedIn) {
 			$response = $this->generateLogoutButtonHTML($message);
 		}
 
 		return $response;
 	}
 
-	/**
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
-	*/
-	private function generateLogoutButtonHTML(string $message) 
+	private function generateLogoutButtonHTML(string $message) : string
 	{
 		return '
 			<form  method="post" >
@@ -49,11 +45,7 @@ class LoginView implements \model\LoginObserver {
 		';
 	}
 	
-	/**
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
-	*/
-	private function generateLoginFormHTML(string $message) 
+	private function generateLoginFormHTML(string $message) : string
 	{
 		return '
 			<form method="post" > 
@@ -76,53 +68,57 @@ class LoginView implements \model\LoginObserver {
 		';
 	}
 
-	/**
-	* @return  void
-	*/
-	public function refreshPage()
-	{
-		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
-		exit;
-	}
-	/**
-	* @return  boolean
-	*/
-	public function isLogin()
+	public function isLogin() : bool
 	{
 		return isset($_REQUEST[self::$login]);
 	}
-	/**
-	* @return  boolean
-	*/
-	public function isLogout()
+
+	public function isLogout() : bool
 	{
 		return isset($_REQUEST[self::$logout]);
 	}
-	/**
-	* @return  boolean
-	*/
-	public function isSessionUsername() 
-	{
-		return $this->loginModel->getNewRegisterUsername() != null;
-	}
-	/**
-	* @return  boolean
-	*/
-	public function isSessionMessage() 
-	{
-		return $this->loginModel->getNewRegisterMessage() != null;
-	}
-	/**
-	* @return  boolean
-	*/
-	public function isRequestMessage() 
+
+	public function isRequestMessage() : bool
 	{
 		return isset($_REQUEST[self::$messageId]);
 	}
-	/**
-	* @return  void
-	*/
-	public function getMessage() 
+
+	public function getRequestUserName() : string
+	{
+		return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
+	}
+
+	public function setRequestUserName(string $username) : void
+	{
+		$_REQUEST[self::$name] = $username;
+	}
+
+	public function getRequestPassword() : string
+	{
+		return $_REQUEST[self::$password];
+	}
+
+	public function getRequestMessage() : string
+	{
+		return $_REQUEST[self::$messageId];
+	}
+
+	public function setRequestMessage(string $message) : void
+	{
+		$_REQUEST[self::$messageId] = $message;
+	}
+
+	public function isSessionUsername() : bool
+	{
+		return $this->loginModel->getStoredUsername() != null;
+	}
+
+	public function isSessionMessage() : bool
+	{
+		return $this->loginModel->getNewRegisterMessage() != null;
+	}
+
+	public function getMessage() : string
 	{
 		if ($this->isRequestMessage()) {
 			return $this->getRequestMessage();
@@ -132,79 +128,36 @@ class LoginView implements \model\LoginObserver {
 			return "";
 		}
 	}
-	/**
-	* @return  string
-	*/
-	public function getRequestUserName()
-	{
-		if ($this->isSessionUsername()) {
-			return $this->loginModel->getNewRegisterUsername();
-		} else {
-			return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
-		}
-	}
-	/**
-	* @return  string
-	*/
-	public function getRequestPassword() 
-	{
-		return $_REQUEST[self::$password];
-	}
-	/**
-	* @return  void
-	*/
-	public function getRequestMessage() 
-	{
-		return $_REQUEST[self::$messageId];
-	}
-	/**
-	* @return  void
-	*/
-	public function setRequestMessage(string $message) 
-	{
-		$_REQUEST[self::$messageId] = $message;
-	}
 
-	/**
-	* @return  boolean
-	*/
-	public function isCookieCredentials()
+	public function isCookieCredentials() : bool
 	{
 		return (isset($_COOKIE[self::$cookieName]) && isset($_COOKIE[self::$cookiePassword]));
 	}
-	/**
-	* @return  void
-	*/
-	public function isCookieLoggedInUser()
+
+	public function isCookieCredentialsCorrect() : bool
 	{
-		if ($this->isCookieCredentials()) {
-			return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
-		} else {
-			return false;
-		}
+		return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
 	}
-	/**
-	* @return  void
-	*/
-	public function setCookieCredentials(string $username, string $password)
+
+	public function setCookieCredentials(string $username, string $password) : void
 	{
 		setcookie(self::$cookieName, $username, time() + (86400 * 30), "/");
 		setcookie(self::$cookiePassword, $password, time() + (86400 * 30), "/");
 	}
-	/**
-	* @return  boolean
-	*/
-	public function clearCookies()
-	{
+
+	public function clearCookieCredentials() : void {
 		setcookie(self::$cookieName, '', time() - 3600);
 		setcookie(self::$cookiePassword, '', time() - 3600);
 	}
 
-	/**
-	* @return  void
-	*/
-	public function setLastUsernameInput(string $username) 
+	public function setLastUsernameInput(string $username)  : void
 	{
 		$_REQUEST[self::$name] = $username;
+	}
+
+	public function refreshPage() : void
+	{
+		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
+		exit;
 	}
 }

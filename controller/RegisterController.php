@@ -17,11 +17,8 @@ class RegisterController {
 		}
 	}
 
-	/**
-     * @return string
-     */
-	public function showRegisterPage()
+	public function showRegisterPage(bool $loginStatus) : string
 	{
-		return $this->registerView->showResponse();
+		return $this->registerView->showResponse($loginStatus);
 	}
 }

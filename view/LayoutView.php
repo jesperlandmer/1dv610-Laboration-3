@@ -16,7 +16,7 @@ class LayoutView {
     $this->dateTimeView = new DateTimeView();
   }
   
-  public function render($pageView) 
+  public function render($pageView) : void
   {
     echo '<!DOCTYPE html>
       <html>
@@ -39,18 +39,7 @@ class LayoutView {
     ';
   }
 
-  /**
-	 * @return boolean
-	 */
-  public function isRegisterPage() 
-  {
-    return isset($_GET["register"]);
-  }
-
-  /**
-	 * @return string
-	 */
-  private function renderTopLink() 
+  private function renderTopLink() : string
   {
     if ($this->isRegisterPage()) {
       return '<a href="?">Back to login</a>';
@@ -59,10 +48,7 @@ class LayoutView {
     }
   }
   
-  /**
-	 * @return string
-	 */
-  private function renderIsLoggedIn() 
+  private function renderIsLoggedIn() : string
   {
     if ($this->isLoggedIn) {
       return '<h2>Logged in</h2>';
@@ -70,5 +56,10 @@ class LayoutView {
     else {
       return '<h2>Not logged in</h2>';
     }
+  }
+
+  public function isRegisterPage() : bool
+  {
+    return isset($_GET["register"]);
   }
 }

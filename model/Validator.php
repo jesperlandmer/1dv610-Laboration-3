@@ -8,82 +8,64 @@ class Validator
 {
     private $message;
 
-    public function validate(RegisterModel $user) 
+    public function validate(PersistantUser $user)
     {
-      $this->user = $user;
+        $this->user = $user;
       
-            if ($this->usernameHasMinLength() == false) {
-              $this->message .= \view\MessageView::ErrorUsernameLength;
-            }
+        if ($this->usernameHasMinLength() == false) {
+            $this->message .= \view\MessageView::ErrorUsernameLength;
+        }
       
-            if ($this->passwordHasMinLength() == false) {
-              $this->message .= \view\MessageView::ErrorPasswordLength;
-            }
+        if ($this->passwordHasMinLength() == false) {
+            $this->message .= \view\MessageView::ErrorPasswordLength;
+        }
       
-            if ($this->inputIsValidFormat() == false) {
-              $this->message .= \view\MessageView::ErrorInvalidFormat;
-            }
+        if ($this->inputIsValidFormat() == false) {
+            $user->filterUsername();
+            $this->message .= \view\MessageView::ErrorInvalidFormat;
+        }
       
-            if ($this->isUniqueUsername() == false) {
-              $this->message .= \view\MessageView::ErrorUserExists;
-            }
+        if ($this->isUniqueUsername() == false) {
+            $this->message .= \view\MessageView::ErrorUserExists;
+        }
       
-            if ($this->repeatedPasswordMatch() == false) {
-              $this->message .= \view\MessageView::ErrorPasswordMatch;
-            }
+        if ($this->repeatedPasswordMatch() == false) {
+            $this->message .= \view\MessageView::ErrorPasswordMatch;
+        }
     }
 
-    /**
-     * @return boolean
-     */
-    public function usernameHasMinLength()
+    public function usernameHasMinLength() : bool
     {
-        return strlen($this->user->getUsername()) >= 3;
+        return strlen($this->user->getStoredUsername()) >= 3;
     }
 
-    /**
-     * @return boolean
-     */
-    public function passwordHasMinLength()
+    public function passwordHasMinLength() : bool
     {
-        return strlen($this->user->getPassword()) >= 6;
+        return strlen($this->user->getStoredPassword()) >= 6;
     }
     
-    /**
-     * @return boolean
-     */
-    public function inputIsValidFormat()
+    public function inputIsValidFormat() : bool
     {
-        return filter_var($this->user->getUsername(), FILTER_SANITIZE_STRING) == $this->user->getUsername();
+        return filter_var($this->user->getStoredUsername(), FILTER_SANITIZE_STRING) == $this->user->getStoredUsername();
     }
 
-    /**
-     * @return boolean
-     */
-    public function isUniqueUsername()
+    public function isUniqueUsername() : bool
     {
-        return $this->user->getUserFromDatabase()->rowCount() == 0;
+        $username = $this->user->getStoredUsername();
+        return $this->user->getUserFromDatabase($username)->rowCount() == 0;
     }
 
-    /**
-     * @return boolean
-     */
-    public function repeatedPasswordMatch()
+    public function repeatedPasswordMatch() : bool
     {
-        return $this->user->getPassword() == $this->user->getPasswordRepeat();
+        return $this->user->getStoredPassword() == $this->user->getStoredPasswordRepeat();
     }
 
-    /**
-     * @return boolean
-     */
-    public function isMessage()
+    public function isMessage() : bool
     {
         return isset($this->message);
     }
-    /**
-     * @return string
-     */
-    public function getMessage()
+
+    public function getMessage() : string
     {
         if ($this->isMessage()) {
             return $this->message;

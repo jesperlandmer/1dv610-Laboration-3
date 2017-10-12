@@ -11,27 +11,31 @@ class LoginController {
 		$this->loginModel = new \model\LoginModel();
 		$this->loginView = new \view\LoginView($this->loginModel);
 
+		if (strlen($this->loginModel->getStoredUsername()) > 0) {
+			$this->loginView->setRequestUsername($this->loginModel->getStoredUsername());
+		}
+		$this->loginView->setRequestMessage($this->loginModel->getStoredMessage());
+
 		if ($this->loginView->isLogin()) {
 			$this->loginModel->newLogin($this->loginView);
 		}
 
-		if ($this->loginView->isLogOut() && $this->loginView->isCookieLoggedInUser()) {
+		if ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials()) {
 			$this->loginModel->executeLogout($this->loginView);
 		}
 	}
 
-	/**
-     * @return string
-     */
-	public function showLoginPage()
+	public function showLoginPage(bool $loginStatus) : string
 	{
-		return $this->loginView->showResponse();
+		return $this->loginView->showResponse($loginStatus);
 	}
-	/**
-     * @return boolean
-     */
-	public function getLoginStatus()
+
+	public function getLoginStatus() : bool
 	{
-		return $this->loginView->isCookieLoggedInUser();
+		if ($this->loginView->isCookieCredentials()) {
+			return ($this->loginView->isCookieCredentialsCorrect()) ? true : false;
+		} else {
+			return false;
+		}
 	}
 }

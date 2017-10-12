@@ -2,128 +2,84 @@
 
 namespace model;
 
-require_once("dbHelpers/PDOService.php");
 require_once("PersistantUser.php");
 
-class LoginModel {
+class LoginModel
+{
 
-  private $username;
-  private $password;
+    private $username;
+    private $password;
 
-  public function __construct() 
-  {
-    $this->dbHelper = new PDOService();
-    $this->persistentUser = new PersistantUser();
-  }
+    public function __construct()
+    {
+        $this->persistentUser = new PersistantUser();
+    }
 
-  /**
-   * @return void
-   */
-  public function newLogin(LoginObserver $observer) 
-  {
-    $this->setLoginCredentials($observer);
-    $this->executeLogin($observer);
-  }
-   /**
-   * @return boolean
-   */
-  public function isLoggedIn(string $username, string $password)
-  {
-    $this->username = $username;
-    $this->password = $password;
+    public function newLogin(LoginObserver $observer) : void
+    {
+        $this->setLoginCredentials($observer);
+        $this->executeLogin($observer);
+    }
 
-    return $this->isExistingUser();
-  }
+    public function isLoggedIn(string $username, string $password) : bool
+    {
+        $this->username = $username;
+        $this->password = $password;
 
-  /**
-   * @return void
-   */
-  public function setLoginCredentials(LoginObserver $input) 
-  {
-    $this->username = $input->getRequestUsername();
-    $this->password = $input->getRequestPassword();
-  }
+        return $this->isExistingUser();
+    }
 
-  /**
-   * @return void
-   */
-  public function executeLogin(LoginObserver $view) 
-  {
-    if ($this->isUsernameInput() == false) {
-        $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
+    public function setLoginCredentials(LoginObserver $input) : void
+    {
+        $this->username = $input->getRequestUsername();
+        $this->password = $input->getRequestPassword();
+    }
 
-    } else if ($this->isPasswordInput() == false) {
-        $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
-        
-    } else if ($this->isExistingUser() == false) {
-        $view->setLastUsernameInput($this->username);
-        $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
+    private function executeLogin(LoginObserver $view) : void
+    {
+        if ($this->isUsernameInput() == false) {
+            $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
+        } elseif ($this->isPasswordInput() == false) {
+            $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
+        } elseif ($this->isExistingUser() == false) {
+            $view->setLastUsernameInput($this->username);
+            $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
+        } else {
+            $view->setCookieCredentials($this->username, $this->password);
+            $this->persistentUser->setStoredMessage(\view\MessageView::LoginSuccessful);
+            $view->refreshPage();
+        }
+    }
 
-    } else {
-        $view->setCookieCredentials($this->username, $this->password);
-        $this->persistentUser->setMessage(\view\MessageView::LoginSuccessful);
+    public function executeLogout(LoginObserver $view) : void
+    {
+        $view->clearCookieCredentials();
+        $this->persistentUser->setStoredMessage(\view\MessageView::LogoutSuccessful);
         $view->refreshPage();
     }
-  }
 
-   /**
-   * @return void
-   */
-  public function executeLogout(LoginObserver $view) 
-  {
-    $view->clearCookies();
-    $this->persistentUser->setMessage(\view\MessageView::LogoutSuccessful);
-    $view->refreshPage();
-  }
-
-   /**
-   * @return boolean
-   */
-  public function isUsernameInput()
-  {
-      return strlen($this->username) > 0;
-  }
-   /**
-   * @return boolean
-   */
-  public function isPasswordInput()
-  {
-      return strlen($this->password) > 0;
-  }
-   /**
-   * @return boolean
-   */
-  public function isExistingUser()
-  {
-      return password_verify($this->password, $this->getUserFromDatabase()->fetch()["password"]);
-  }
-
-  /**
-   * @return PDOStatement
-   */
-  public function getUserFromDatabase() 
-  {
-    return $this->dbHelper->findData(array(
-      "username" => $this->username
-    ));
-  }
-
-   /**
-   * @return string
-   */
-  public function getNewRegisterUsername()
-  {
-    if ($this->persistentUser->getUsername() != null) {
-        return $this->persistentUser->getUsername();
+    private function isUsernameInput() : bool
+    {
+        return strlen($this->username) > 0;
     }
-  }
-   /**
-   * @return string
-   */
-  public function getNewRegisterMessage()
-  {
-    if ($this->persistentUser->getMessage() != null) {
-        return $this->persistentUser->getMessage();
+
+    private function isPasswordInput() : bool
+    {
+        return strlen($this->password) > 0;
     }
-  }
+
+    private function isExistingUser() : bool
+    {
+        $user = $this->persistentUser->getUserFromDatabase($this->username);
+        return password_verify($this->password, $user->fetch()[PDOService::PDO_PASSWORD]);
+    }
+
+    public function getStoredUsername() : string
+    {
+        return $this->persistentUser->getStoredUsername();
+    }
+    public function getStoredMessage() : string
+    {
+        return $this->persistentUser->getStoredMessage();
+    }
 }

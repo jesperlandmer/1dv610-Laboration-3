@@ -4,53 +4,66 @@ namespace model;
 
 require_once('PDOConnection.php');
 
-class PDOService extends PDOConnection {
+class PDOService extends PDOConnection
+{
 
-  /**
-	 * @return PDOStatement
-	 */
-  public function saveData(array $data) {
-    $PDOStatement = $this->prepareStatement($this->getSaveStatement());
-    $this->executeStatement($PDOStatement, $data);
-    return $PDOStatement;
-  }
+  const PDO_USERNAME = "username";
+  const PDO_PASSWORD = "password";
 
-  /**
-	 * @return PDOStatement
-	 */
-  public function findData(array $data) {
-    $PDOStatement = $this->prepareStatement($this->getFindStatement($data));
-    $this->executeStatement($PDOStatement, $data);
-    return $PDOStatement;
-  }
+    public function saveData(array $data) : \PDOStatement
+    {
+        try {
 
-  private function prepareStatement(string $statement) 
-  {
-    return parent::getDBConnection()->prepare($statement);
-  }
+            $PDOStatement = $this->prepareStatement($this->getSaveStatement());
+            $this->executeStatement($PDOStatement, $data);
+        } catch (\PDOException $err) {
 
-  private function executeStatement(\PDOStatement $statement, array $data) 
-  {
-    return $statement->execute($data);
-  }
+            throw new Exception($err);
+        }
 
-  private function getSaveStatement() 
-  {
-    return 'INSERT INTO Users(username, password) VALUES(:username, :password)';
-  }
+        return $PDOStatement;
+    }
 
-  private function getFindStatement(array $data) 
-  {
-    $sql = 'SELECT * FROM Users WHERE ';
+    public function findData(array $data) : \PDOStatement
+    {
+        try {
+
+            $PDOStatement = $this->prepareStatement($this->getFindStatement($data));
+            $this->executeStatement($PDOStatement, $data);
+        } catch (\PDOException $err) {
+
+            throw new Exception($err);
+        }
+
+        return $PDOStatement;
+    }
+
+    private function prepareStatement(string $statement) : \PDOStatement
+    {
+        return parent::getDBConnection()->prepare($statement);
+    }
+
+    private function executeStatement(\PDOStatement $statement, array $data) : bool
+    {
+        return $statement->execute($data);
+    }
+
+    private function getSaveStatement() : string
+    {
+        return 'INSERT INTO Users(username, password) VALUES(:username, :password)';
+    }
+
+    private function getFindStatement(array $data) : string
+    {
+        $sql = 'SELECT * FROM Users WHERE ';
     
-        foreach($data as $key => $value)
-        {
-          $sql .= $key . '=:' . $key;
-          if(end($data) != $value){
-            $sql .= ' AND ';
-          }
+        foreach ($data as $key => $value) {
+            $sql .= $key . '=:' . $key;
+            if (end($data) != $value) {
+                $sql .= ' AND ';
+            }
         }
         
-    return $sql;
-  }
+        return $sql;
+    }
 }

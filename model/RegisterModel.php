@@ -2,111 +2,53 @@
 
 namespace model;
 
-require_once("dbHelpers/PDOService.php");
 require_once("PersistantUser.php");
 require_once("Validator.php");
 
-class RegisterModel {
+class RegisterModel
+{
 
-  private $username;
-  private $password;
-  private $passwordRepeat;
+    private $username;
+    private $password;
+    private $passwordRepeat;
 
-  public function __construct() 
-  {
-    $this->dbHelper = new PDOService();
-    $this->persistentUser = new PersistantUser();
-  }
-
-  /**
-   * @return void
-   */
-  public function newRegister(RegisterObserver $observer) 
-  {
-    $this->setRegisterCredentials($observer);
-    $this->persistentUser->newRegister($this);
-    $this->executeRegister($observer);
-  }
-
-  /**
-   * @return void
-   */
-  public function setRegisterCredentials(RegisterObserver $input) 
-  {
-    $this->username = $input->getRequestUsername();
-    $this->password = $input->getRequestPassword();
-    $this->passwordRepeat = $input->getRequestPasswordRepeat();
-  }
-
-  /**
-   * @return void
-   */
-  public function executeRegister(RegisterObserver $view) 
-  {
-    if ($this->persistentUser->isErrors() == false) {
-      $this->saveUserToDatabase();
-      $view->redirectToHomePage();
-    } else {
-      $this->handleError($view);
+    public function __construct()
+    {
+        $this->persistentUser = new PersistantUser();
     }
-  }
-  /**
-   * @return void
-   */
-  public function saveUserToDatabase() 
-  {
-    $this->userData = $this->dbHelper->saveData(array(
-      'username' => $this->username,
-      'password' => $this->getHashedPassword()
-    ));
-  }
-  /**
-   * @return void
-   */
-  public function getUserFromDatabase() 
-  {
-    return $this->dbHelper->findData(array(
-      'username' => $this->username
-    ));
-  }
 
-  /**
-   * @return string
-   */
-  public function getUsername() 
-  {
-    return $this->username;
-  }
-  /**
-   * @return string
-   */
-  public function getPassword() 
-  {
-    return $this->password;
-  }
-  /**
-   * @return string
-   */
-  public function getPasswordRepeat() 
-  {
-    assert(isset($this->passwordRepeat));
-    return $this->passwordRepeat;
-  }
-  /**
-   * @return string
-   */
-  private function getHashedPassword() 
-  {
-    return password_hash("$this->password", PASSWORD_BCRYPT, ["cost" => 8]);
-  }
+    public function newRegister(RegisterObserver $observer) : void
+    {
+        $this->setRegisterCredentials($observer);
+        $this->persistentUser->setStoredCredentials($observer);
+        $this->persistentUser->validateStoredCredentials();
+        $this->executeRegister($observer);
+    }
 
-  /**
-   * @param Type RegisterObserver OR LoginObserver - Both handle error output same way
-   * @return void
-   */
-  public function handleError($view)
-  {
-    $view->setLastUsernameInput($this->persistentUser->getUsername());
-    $view->setRequestMessage($this->persistentUser->getMessage());
-  }
+    public function setRegisterCredentials(RegisterObserver $view) : void
+    {
+        $this->username = $view->getRequestUsername();
+        $this->password = $this->hashString($view->getRequestPassword());
+    }
+
+    public function executeRegister(RegisterObserver $view) : void
+    {
+        if ($this->persistentUser->isErrors() == false) {
+            $this->persistentUser->saveUserToDatabase($this->username, $this->password);
+            $view->redirectToHomePage();
+        } else {
+            $this->handleError($view);
+        }
+    }
+
+    private function hashString(string $input) : string
+    {
+        return password_hash("$input", PASSWORD_BCRYPT, ["cost" => 8]);
+    }
+
+    public function handleError(RegisterObserver $view) : void
+    {
+        $view->setLastUsernameInput($this->persistentUser->getStoredUsername());
+        $view->setRequestMessage($this->persistentUser->getStoredMessage());
+    }
 }

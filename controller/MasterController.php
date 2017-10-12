@@ -15,15 +15,22 @@ class MasterController {
         $this->layoutView = new \view\LayoutView($this->loginController->getLoginStatus());
     }
     
-    /**
-     * @return void
-     */
-    public function showPage() 
+    public function showPage() : void
     {
         if ($this->layoutView->isRegisterPage()) {
-            $this->layoutView->render($this->registerController->showRegisterPage());
+            $this->layoutView->render($this->getRegisterPage());
         } else {
-            $this->layoutView->render($this->loginController->showLoginPage());
+            $this->layoutView->render($this->getLoginPage());
         }
+    }
+
+    private function getRegisterPage() : string
+    {
+        return $this->registerController->showRegisterPage($this->loginController->getLoginStatus());
+    }
+
+    private function getLoginPage() : string
+    {
+        return $this->loginController->showLoginPage($this->loginController->getLoginStatus());
     }
 }

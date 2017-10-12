@@ -12,24 +12,18 @@ class RegisterView implements \model\RegisterObserver {
 	private static $registerPasswordRepeat = "RegisterView::PasswordRepeat";
 	private static $registerMessageId = "RegisterView::Message";
 
-	/**
-	 * @return  void BUT writes to standard output!
-	 */
-	public function showResponse() 
+	public function showResponse(bool $isLoggedIn) : string
 	{
-		$message = "";
-		if ($this->isMessage()) {
-			$message = $this->getRequestMessage();
-		}
-		
+		assert($isLoggedIn == false);
+
+		$message = $this->getRequestMessage();
 		$response = $this->generateRegisterFormHTML($message);
+
 		return $response;
 	}
 
-	/**
-	* @return  void, BUT writes to standard output!
-	*/
-	private function generateRegisterFormHTML($message) {
+	private function generateRegisterFormHTML($message) : string
+	{
 		return '
 			<h2>Register new user</h2>
 			<form method="post">
@@ -56,76 +50,55 @@ class RegisterView implements \model\RegisterObserver {
 		';
 	}
 
-	/**
-	* @return  void
-	*/
-	public function redirectToHomePage()
-	{
-		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
-		exit;
-	}
-	/**
-	* @return  boolean
-	*/
-	public function isRegister()
+	public function isRegister() : bool
 	{
 		return isset($_REQUEST[self::$register]);
 	}
-	/**
-	* @return  boolean
-	*/
-	public function isRequestUserName()
+
+	public function isRequestUserName() : bool
 	{
 		return isset($_REQUEST[self::$registerName]);
 	}
-	/**
-	* @return  boolean
-	*/
-	public function isMessage() 
+
+	public function isMessage() : bool
 	{
 		return isset($_REQUEST[self::$registerMessageId]);
 	}
-	/**
-	* @return  string
-	*/
-	public function getRequestUserName() 
+
+	public function getRequestUserName() : string
 	{
 		return (isset($_REQUEST[self::$registerName])) ? $_REQUEST[self::$registerName] : "";
 	}
-	/**
-	* @return  string
-	*/
-	public function getRequestPassword() 
+
+	public function getRequestPassword() : string
 	{
 		return $_REQUEST[self::$registerPassword];
 	}
-	/**
-	* @return  string
-	*/
-	public function getRequestPasswordRepeat() 
+
+	public function getRequestPasswordRepeat() : string
 	{
 		return $_REQUEST[self::$registerPasswordRepeat];
 	}
-	/**
-	* @return  void
-	*/
-	public function getRequestMessage()
+
+	public function getRequestMessage() : string
 	{
-		return $_REQUEST[self::$registerMessageId];
+		return (isset($_REQUEST[self::$registerMessageId])) ? $_REQUEST[self::$registerName] : "";
 	}
-	/**
-	* @return  void
-	*/
-	public function setRequestMessage(string $message) 
+
+	public function setRequestMessage(string $message) : void
 	{
 		$_REQUEST[self::$registerMessageId] = $message;
 	}
-	/**
-	* @return  void
-	*/
-	public function setLastUsernameInput(string $username) 
+
+	public function setLastUsernameInput(string $username) : void
 	{
 		$_REQUEST[self::$registerName] = $username;
+	}
+
+	public function redirectToHomePage() : void
+	{
+		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
+		exit;
 	}
 }
 

@@ -2,6 +2,8 @@
 
 namespace model;
 
+require_once("dbHelpers/PDOService.php");
+
 class PersistantUser
 {
     private static $username = "PersistantUser::Username";
@@ -12,71 +14,88 @@ class PersistantUser
     public function __construct()
     {
         assert(isset($_SESSION));
+        $this->dbHelper = new PDOService();
         $this->validator = new Validator();
     }
 
     /**
      * @return void
      */
-    public function newRegister(RegisterModel $user)
+    public function setStoredCredentials(RegisterObserver $user) : void
     {
-        $this->validator->validate($user);
-
-        $_SESSION[self::$username] = $this->filterString($user->getUsername());
+        $_SESSION[self::$username] = $user->getRequestUsername();
+        $_SESSION[self::$password] = $user->getRequestPassword();
+        $_SESSION[self::$passwordRepeat] = $user->getRequestPasswordRepeat();
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
-    /**
-     * @return string
-     */
-    public function filterString(string $input)
+    public function validateStoredCredentials() : void
     {
-        return filter_var($input, FILTER_SANITIZE_STRING);
+        $this->validator->validate($this);
     }
-     /**
-     * @return boolean
-     */
-    public function isUsername()
+
+    public function filterUsername(string $username) : string
     {
-        return isset($_SESSION[self::$username]);
+        $_SESSION[self::$username] = filter_var($username, FILTER_SANITIZE_STRING);
     }
-    /**
-     * @return boolean
-     */
-    public function isMessage()
+
+    public function getStoredUsername() : string
     {
-        return isset($_SESSION[self::$message]);
+        return ($this->isUsername()) ? $_SESSION[self::$username] : "";
     }
-    /**
-     * @return string
-     */
-    public function getUsername()
+
+    public function getStoredPassword() : string
     {
-        if ($this->isUsername()) {
-            return $_SESSION[self::$username];
-        }
+        return $_SESSION[self::$password];
     }
-    /**
-     * @return string
-     */
-    public function getMessage()
+
+    public function getStoredPasswordRepeat() : string
     {
-        if ($this->isMessage()) {
-            return $_SESSION[self::$message];
-        }
+        return $_SESSION[self::$passwordRepeat];
     }
-    /**
-     * @return string
-     */
-    public function setMessage(string $message)
+
+    public function getStoredMessage() : string
+    {
+        return ($this->isMessage()) ? $_SESSION[self::$message] : "";
+    }
+
+    public function setStoredMessage(string $message) : void
     {
         $_SESSION[self::$message] = $message;
     }
-    /**
-     * @return boolean
-     */
-    public function isErrors()
+
+    public function isUsername() : bool
+    {
+        return isset($_SESSION[self::$username]);
+    }
+
+    public function isMessage() : bool
+    {
+        return isset($_SESSION[self::$message]);
+    }
+
+    public function isErrors() : bool
     {
         return $_SESSION[self::$message] != \view\MessageView::RegisterSuccessful;
+    }
+
+    public function getUserFromDatabase(string $username) : \PDOStatement
+    {
+        assert(isset($username));
+
+        return $this->dbHelper->findData(array(
+        PDOService::PDO_USERNAME => $username
+        ));
+    }
+
+    public function saveUserToDatabase(string $username, string $password) : void
+    {
+        assert(isset($username));
+        assert(isset($password));
+
+        $this->userData = $this->dbHelper->saveData(array(
+        PDOService::PDO_USERNAME => $username,
+        PDOService::PDO_PASSWORD => $password
+        ));
     }
 }
