@@ -108,27 +108,6 @@ class LoginView implements \model\LoginObserver {
 		$_REQUEST[self::$messageId] = $message;
 	}
 
-	public function isSessionUsername() : bool
-	{
-		return $this->loginModel->getStoredUsername() != null;
-	}
-
-	public function isSessionMessage() : bool
-	{
-		return $this->loginModel->getNewRegisterMessage() != null;
-	}
-
-	public function getMessage() : string
-	{
-		if ($this->isRequestMessage()) {
-			return $this->getRequestMessage();
-		} else if ($this->isSessionMessage()) {
-			return $this->loginModel->getNewRegisterMessage();
-		} else {
-			return "";
-		}
-	}
-
 	public function isCookieCredentials() : bool
 	{
 		return (isset($_COOKIE[self::$cookieName]) && isset($_COOKIE[self::$cookiePassword]));

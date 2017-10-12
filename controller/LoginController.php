@@ -43,7 +43,9 @@ class LoginController {
 
 	private function setStoredMessage()
 	{
-		$this->loginView->setRequestMessage($this->loginModel->getStoredMessage());
+		if (strlen($this->loginModel->getStoredMessage()) > 0) {
+			$this->loginView->setRequestMessage($this->loginModel->getStoredMessage());
+		}
 	}
 
 	private function doLogin() 
