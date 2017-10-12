@@ -50,19 +50,9 @@ class RegisterView implements \model\RegisterObserver {
 		';
 	}
 
-	public function isRegister() : bool
+	public function isRequestRegister() : bool
 	{
 		return isset($_REQUEST[self::$register]);
-	}
-
-	public function isRequestUserName() : bool
-	{
-		return isset($_REQUEST[self::$registerName]);
-	}
-
-	public function isMessage() : bool
-	{
-		return isset($_REQUEST[self::$registerMessageId]);
 	}
 
 	public function getRequestUserName() : string

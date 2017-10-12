@@ -22,10 +22,7 @@ class LoginView implements \model\LoginObserver {
 
 	public function showResponse(bool $isLoggedIn) : string
 	{
-		$message = "";
-		if ($this->isRequestMessage()) {
-			$message = $this->getRequestMessage();
-		}
+		$message = $this->getRequestMessage();
 		$response = $this->generateLoginFormHTML($message);
 
 		if ($isLoggedIn) {
@@ -68,29 +65,19 @@ class LoginView implements \model\LoginObserver {
 		';
 	}
 
-	public function isLogin() : bool
+	public function isRequestLogin() : bool
 	{
 		return isset($_REQUEST[self::$login]);
 	}
 
-	public function isLogout() : bool
+	public function isRequestLogout() : bool
 	{
 		return isset($_REQUEST[self::$logout]);
-	}
-
-	public function isRequestMessage() : bool
-	{
-		return isset($_REQUEST[self::$messageId]);
 	}
 
 	public function getRequestUserName() : string
 	{
 		return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
-	}
-
-	public function setRequestUserName(string $username)
-	{
-		$_REQUEST[self::$name] = $username;
 	}
 
 	public function getRequestPassword() : string
@@ -100,7 +87,12 @@ class LoginView implements \model\LoginObserver {
 
 	public function getRequestMessage() : string
 	{
-		return $_REQUEST[self::$messageId];
+		return (isset($_REQUEST[self::$messageId])) ? $_REQUEST[self::$messageId] : "";
+	}
+
+	public function setRequestUserName(string $username)
+	{
+		$_REQUEST[self::$name] = $username;
 	}
 
 	public function setRequestMessage(string $message)

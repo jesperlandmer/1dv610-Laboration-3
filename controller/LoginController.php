@@ -11,7 +11,7 @@ class LoginController {
 		$this->loginModel = new \model\LoginModel();
 		$this->loginView = new \view\LoginView($this->loginModel);
 
-		if ($this->loginView->isLogin()) {
+		if ($this->loginView->isRequestLogin()) {
 			$this->doLogin();
 		} else if ($this->isLogout()) {
 			$this->doLogout();
@@ -60,6 +60,6 @@ class LoginController {
 
 	private function isLogout()
 	{
-		return ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials());
+		return ($this->loginView->isRequestLogout() && $this->loginView->isCookieCredentials());
 	}
 }

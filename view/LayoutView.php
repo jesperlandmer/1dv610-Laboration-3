@@ -9,6 +9,9 @@ class LayoutView {
 
   private $isLoggedIn = false;
 
+  private static $registerPage = "register";
+  private static $editPage = "edit";
+
   public function __construct(bool $loggedInStatus)
   {
     $this->isLoggedIn = $loggedInStatus;
@@ -44,7 +47,7 @@ class LayoutView {
     if ($this->isLoggedIn == false) {
       return ($this->isRegisterPage()) ? "<a href='?'>Back to login</a>" : "<a href='?register'>Register a new user</a>";
     } else {
-      return "";
+      return ($this->isChangePasswordPage()) ? "<a href='?'>Back</a>" : "<a href='?edit'>Change password</a>";
     }
   }
   
@@ -55,6 +58,11 @@ class LayoutView {
 
   public function isRegisterPage() : bool
   {
-    return isset($_GET["register"]);
+    return isset($_GET[self::$registerPage]);
+  }
+
+  public function isChangePasswordPage() : bool
+  {
+    return isset($_GET[self::$editPage]);
   }
 }

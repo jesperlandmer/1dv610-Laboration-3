@@ -12,7 +12,7 @@ class RegisterController {
 		$this->user = new \model\RegisterModel();
 		$this->registerView = new \view\RegisterView();
 
-		if ($this->registerView->isRegister()) {
+		if ($this->registerView->isRequestRegister()) {
 			$this->user->newRegister($this->registerView);
 		}
 	}
