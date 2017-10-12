@@ -41,12 +41,16 @@ class LayoutView {
 
   private function renderTopLink() : string
   {
-    return ($this->isRegisterPage()) ? "<a href='?'>Back to login</a>" : "<a href='?register'>Register a new user</a>";
+    if ($this->isLoggedIn == false) {
+      return ($this->isRegisterPage()) ? "<a href='?'>Back to login</a>" : "<a href='?register'>Register a new user</a>";
+    } else {
+      return "";
+    }
   }
   
   private function renderIsLoggedIn() : string
   {
-    return ($this->isLoggedIn) ? "<h2>Logged in</h2>" : "<h2>Not logged in</h2>";
+    return ($this->isLoggedIn == true) ? "<h2>Logged in</h2>" : "<h2>Not logged in</h2>";
   }
 
   public function isRegisterPage() : bool

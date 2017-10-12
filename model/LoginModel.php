@@ -21,7 +21,7 @@ class LoginModel
         $this->executeLogin($observer);
     }
 
-    public function isLoggedIn(string $username, string $password) : bool
+    public function isLoggedInWithCookies(string $username, string $password) : bool
     {
         $this->username = $username;
         $this->password = $password;

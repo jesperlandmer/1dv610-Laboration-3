@@ -115,7 +115,7 @@ class LoginView implements \model\LoginObserver {
 
 	public function isCookieCredentialsCorrect() : bool
 	{
-		return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
+		return $this->loginModel->isLoggedInWithCookies($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
 	}
 
 	public function setCookieCredentials(string $username, string $password)

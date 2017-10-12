@@ -27,7 +27,7 @@ class LoginController {
 
 	public function getLoginStatus() : bool
 	{
-		if ($this->loginView->isCookieCredentials()) {
+		if ($this->loginView->isCookieCredentials() && $this->loginView->isCookieCredentialsCorrect()) {
 			return ($this->loginView->isCookieCredentialsCorrect()) ? true : false;
 		} else {
 			return false;

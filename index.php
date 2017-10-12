@@ -11,7 +11,16 @@ date_default_timezone_set('Europe/Stockholm');
 
 require_once('controller/MasterController.php');
 
-$masterController = new \controller\MasterController();
-$masterController->showPage();
+try {
+
+    $masterController = new \controller\MasterController();
+    $masterController->showPage();
+} catch(Exception $error) {
+
+    echo $error->getMessage();
+} catch (PDOException $PDOError) {
+
+    echo $PDOError->getMessage(); 
+}
 
 session_unset();

@@ -10,7 +10,6 @@ class RegisterModel
 
     private $username;
     private $password;
-    private $passwordRepeat;
 
     public function __construct()
     {
@@ -20,15 +19,20 @@ class RegisterModel
     public function newRegister(RegisterObserver $observer)
     {
         $this->setRegisterCredentials($observer);
-        $this->persistentUser->setStoredCredentials($observer);
-        $this->persistentUser->validateStoredCredentials();
+        $this->setPersistentUser($observer);
         $this->executeRegister($observer);
     }
 
-    public function setRegisterCredentials(RegisterObserver $view)
+    private function setRegisterCredentials(RegisterObserver $view)
     {
         $this->username = $view->getRequestUsername();
         $this->password = $this->hashString($view->getRequestPassword());
+    }
+
+    private function setPersistentUser(RegisterObserver $view)
+    {
+        $this->persistentUser->setStoredCredentials($view);
+        $this->persistentUser->validateStoredCredentials();
     }
 
     public function executeRegister(RegisterObserver $view)
