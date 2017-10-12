@@ -9,6 +9,7 @@ class LoginModel
 
     private $username;
     private $password;
+    private $loginObserver;
 
     public function __construct()
     {
@@ -17,8 +18,16 @@ class LoginModel
 
     public function newLogin(LoginObserver $observer)
     {
-        $this->setLoginCredentials($observer);
-        $this->executeLogin($observer);
+        $this->loginObserver = $observer;
+        $this->setLoginCredentials();
+        $this->executeLogin();
+    }
+
+    public function newLogout(LoginObserver $observer)
+    {
+        $observer->clearCookieCredentials();
+        $this->persistentUser->setStoredMessage(\view\MessageView::LogoutSuccessful);
+        $observer->refreshPage();
     }
 
     public function isLoggedInWithCookies(string $username, string $password) : bool
@@ -29,37 +38,30 @@ class LoginModel
         return $this->isExistingUser();
     }
 
-    public function setLoginCredentials(LoginObserver $input)
+    public function setLoginCredentials()
     {
-        $this->username = $input->getRequestUsername();
-        $this->password = $input->getRequestPassword();
+        $this->username = $this->loginObserver->getRequestUsername();
+        $this->password = $this->loginObserver->getRequestPassword();
     }
 
-    private function executeLogin(LoginObserver $view)
+    private function executeLogin()
     {
         if ($this->isUsernameInput() == false) {
 
-            $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
+            $this->loginObserver->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
         } elseif ($this->isPasswordInput() == false) {
 
-            $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
+            $this->loginObserver->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
         } elseif ($this->isExistingUser() == false) {
 
-            $view->setLastUsernameInput($this->username);
-            $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
-        } elseif ($view->isCookieCredentials() == false) {
-          
-            $view->setCookieCredentials($this->username, $this->password);
-            $this->persistentUser->setStoredMessage(\view\MessageView::LoginSuccessful);
-            $view->refreshPage();
-        }
-    }
+            $this->loginObserver->setLastUsernameInput($this->username);
+            $this->loginObserver->setRequestMessage(\view\MessageView::ErrorNoUserFound);
+        } elseif ($this->loginObserver->isCookieCredentials() == false) {
 
-    public function executeLogout(LoginObserver $view)
-    {
-        $view->clearCookieCredentials();
-        $this->persistentUser->setStoredMessage(\view\MessageView::LogoutSuccessful);
-        $view->refreshPage();
+            $this->loginObserver->setCookieCredentials($this->username, $this->password);
+            $this->persistentUser->setStoredMessage(\view\MessageView::LoginSuccessful);
+            $this->loginObserver->refreshPage();
+        }
     }
 
     private function isUsernameInput() : bool
@@ -74,14 +76,19 @@ class LoginModel
 
     private function isExistingUser() : bool
     {
-        $user = $this->persistentUser->getUserFromDatabase($this->username);
-        return password_verify($this->password, $user->fetch()[PDOService::PDO_PASSWORD]);
+        return password_verify($this->password, $this->getDBUserPassword());
+    }
+
+    private function getDBUserPassword() : string
+    {
+        return $this->persistentUser->getUserFromDatabase($this->username)->fetch()[PDOVariables::DB_PASSWORD_COLUMN];
     }
 
     public function getStoredUsername() : string
     {
         return $this->persistentUser->getStoredUsername();
     }
+
     public function getStoredMessage() : string
     {
         return $this->persistentUser->getStoredMessage();

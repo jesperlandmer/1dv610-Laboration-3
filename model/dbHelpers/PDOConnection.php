@@ -2,12 +2,14 @@
 
 namespace model;
 
+require_once('PDOVariables.php');
+
 class PDOConnection {
 
-  private $dbHost = "localhost";
-  private $dbName = "users";
-  private $dbUser = "root";
-  private $dbPass = "root";
+  private $dbHost = PDOVariables::DB_HOST;
+  private $dbName = PDOVariables::DB_NAME;
+  private $dbUser = PDOVariables::DB_USER;
+  private $dbPass = PDOVariables::DB_PASS;
   private $dbConnect;
 
   public function __construct() 
@@ -15,12 +17,14 @@ class PDOConnection {
     try {
 
       $this->dbConnect = new \PDO("mysql:host=$this->dbHost;dbname=$this->dbName", $this->dbUser, $this->dbPass);
+      $this->dbData = new PDOVariables();
+
       $this->dbConnect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
     catch (\PDOException $err) {
 
       throw new Exception("DB Connection failed");
-      die();  //  terminate connection
+      die();
     }
   }
 
