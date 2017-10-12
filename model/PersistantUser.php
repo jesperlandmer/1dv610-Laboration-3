@@ -18,16 +18,16 @@ class PersistantUser
         $this->validator = new Validator();
     }
 
-    public function setStoredCredentials(RegisterObserver $user)
+    public function setRegisterCredentials(RegisterObserver $user)
     {
         $_SESSION[self::$username] = $user->getRequestUsername();
         $_SESSION[self::$password] = $user->getRequestPassword();
         $_SESSION[self::$passwordRepeat] = $user->getRequestPasswordRepeat();
     }
 
-    public function validateStoredCredentials()
+    public function validateRegisterCredentials()
     {
-        $this->validator->validate($this);
+        $this->validator->validateNewUser($this);
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
@@ -81,7 +81,7 @@ class PersistantUser
         assert(isset($username));
 
         return $this->dbHelper->findData(array(
-        PDOService::PDO_USERNAME => $username
+            PDOVariables::DB_USERNAME_COLUMN => $username
         ));
     }
 
@@ -91,8 +91,8 @@ class PersistantUser
         assert(isset($password));
 
         $this->userData = $this->dbHelper->saveData(array(
-        PDOService::PDO_USERNAME => $username,
-        PDOService::PDO_PASSWORD => $password
+            PDOVariables::DB_USERNAME_COLUMN => $username,
+            PDOVariables::DB_PASSWORD_COLUMN => $password
         ));
     }
 }

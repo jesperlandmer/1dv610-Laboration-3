@@ -8,7 +8,7 @@ class Validator
 {
     private $message;
 
-    public function validate(PersistantUser $user)
+    public function validateNewUser(PersistantUser $user)
     {
         $this->user = $user;
       

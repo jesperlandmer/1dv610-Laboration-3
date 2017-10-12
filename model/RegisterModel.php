@@ -10,6 +10,7 @@ class RegisterModel
 
     private $username;
     private $password;
+    private $registerObserver;
 
     public function __construct()
     {
@@ -18,41 +19,43 @@ class RegisterModel
 
     public function newRegister(RegisterObserver $observer)
     {
-        $this->setRegisterCredentials($observer);
-        $this->setPersistentUser($observer);
-        $this->executeRegister($observer);
+        $this->registerObserver = $observer;
+        $this->setRegisterCredentials();
+        $this->setPersistentUser();
+        $this->executeRegister();
     }
 
-    private function setRegisterCredentials(RegisterObserver $view)
+    private function setRegisterCredentials()
     {
-        $this->username = $view->getRequestUsername();
-        $this->password = $this->hashString($view->getRequestPassword());
+        $this->username = $this->registerObserver->getRequestUsername();
+        $this->password = $this->getHashedPassword();
     }
 
-    private function setPersistentUser(RegisterObserver $view)
+    private function setPersistentUser()
     {
-        $this->persistentUser->setStoredCredentials($view);
-        $this->persistentUser->validateStoredCredentials();
+        $this->persistentUser->setRegisterCredentials($this->registerObserver);
+        $this->persistentUser->validateRegisterCredentials();
     }
 
-    public function executeRegister(RegisterObserver $view)
+    public function executeRegister()
     {
         if ($this->persistentUser->isErrors() == false) {
             $this->persistentUser->saveUserToDatabase($this->username, $this->password);
-            $view->redirectToHomePage();
+            $this->registerObserver->redirectToHomePage();
         } else {
-            $this->handleError($view);
+            $this->handleError();
         }
     }
 
-    private function hashString(string $input) : string
+    private function getHashedPassword() : string
     {
-        return password_hash("$input", PASSWORD_BCRYPT, ["cost" => 8]);
+        $password = $this->registerObserver->getRequestPassword();
+        return password_hash("$password", PASSWORD_BCRYPT, ["cost" => 8]);
     }
 
-    public function handleError(RegisterObserver $view)
+    public function handleError()
     {
-        $view->setLastUsernameInput($this->persistentUser->getStoredUsername());
-        $view->setRequestMessage($this->persistentUser->getStoredMessage());
+        $this->registerObserver->setLastUsernameInput($this->persistentUser->getStoredUsername());
+        $this->registerObserver->setRequestMessage($this->persistentUser->getStoredMessage());
     }
 }

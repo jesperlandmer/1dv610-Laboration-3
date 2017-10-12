@@ -55,7 +55,7 @@ class LoginController {
 
 	private function doLogout() 
 	{
-		$this->loginModel->executeLogout($this->loginView);
+		$this->loginModel->newLogout($this->loginView);
 	}
 
 	private function isLogout()

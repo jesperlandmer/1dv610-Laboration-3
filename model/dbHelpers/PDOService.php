@@ -7,33 +7,29 @@ require_once('PDOConnection.php');
 class PDOService extends PDOConnection
 {
 
-  const PDO_USERNAME = "username";
-  const PDO_PASSWORD = "password";
+    private $usernameColumn = PDOVariables::DB_USERNAME_COLUMN;
+    private $passwordColumn = PDOVariables::DB_PASSWORD_COLUMN;
 
     public function saveData(array $data) : \PDOStatement
     {
-        try {
+        $PDOStatement = $this->prepareStatement($this->getSaveStatement());
+        $this->executeStatement($PDOStatement, $data);
 
-            $PDOStatement = $this->prepareStatement($this->getSaveStatement());
-            $this->executeStatement($PDOStatement, $data);
-        } catch (\PDOException $err) {
+        return $PDOStatement;
+    }
 
-            throw new \Exception($err);
-        }
+    public function editData(array $data) : \PDOStatement
+    {
+        $PDOStatement = $this->prepareStatement($this->getEditStatement());
+        $this->executeStatement($PDOStatement, $data);
 
         return $PDOStatement;
     }
 
     public function findData(array $data) : \PDOStatement
     {
-        try {
-
-            $PDOStatement = $this->prepareStatement($this->getFindStatement($data));
-            $this->executeStatement($PDOStatement, $data);
-        } catch (\PDOException $err) {
-
-            throw new \Exception($err);
-        }
+        $PDOStatement = $this->prepareStatement($this->getFindStatement());
+        $this->executeStatement($PDOStatement, $data);
 
         return $PDOStatement;
     }
@@ -50,20 +46,16 @@ class PDOService extends PDOConnection
 
     private function getSaveStatement() : string
     {
-        return 'INSERT INTO Users(username, password) VALUES(:username, :password)';
+        return "INSERT INTO Users($this->usernameColumn, $this->passwordColumn) VALUES(:$this->usernameColumn, :$this->passwordColumn)";
     }
 
-    private function getFindStatement(array $data) : string
+    private function getEditStatement() : string
     {
-        $sql = 'SELECT * FROM Users WHERE ';
-    
-        foreach ($data as $key => $value) {
-            $sql .= $key . '=:' . $key;
-            if (end($data) != $value) {
-                $sql .= ' AND ';
-            }
-        }
-        
-        return $sql;
+        return "UPDATE Users SET $this->passwordColumn = :$this->passwordColumn WHERE $this->usernameColumn = :$this->usernameColumn";
+    }
+
+    private function getFindStatement() : string
+    {
+        return "SELECT * FROM Users WHERE $this->usernameColumn = :$this->usernameColumn";
     }
 }
