@@ -15,7 +15,7 @@ class MasterController {
         $this->layoutView = new \view\LayoutView($this->loginController->getLoginStatus());
     }
     
-    public function showPage() : void
+    public function showPage()
     {
         if ($this->layoutView->isRegisterPage()) {
             $this->layoutView->render($this->getRegisterPage());

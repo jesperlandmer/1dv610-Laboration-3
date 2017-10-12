@@ -18,10 +18,7 @@ class PersistantUser
         $this->validator = new Validator();
     }
 
-    /**
-     * @return void
-     */
-    public function setStoredCredentials(RegisterObserver $user) : void
+    public function setStoredCredentials(RegisterObserver $user)
     {
         $_SESSION[self::$username] = $user->getRequestUsername();
         $_SESSION[self::$password] = $user->getRequestPassword();
@@ -29,7 +26,7 @@ class PersistantUser
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
-    public function validateStoredCredentials() : void
+    public function validateStoredCredentials()
     {
         $this->validator->validate($this);
     }
@@ -59,7 +56,7 @@ class PersistantUser
         return ($this->isMessage()) ? $_SESSION[self::$message] : "";
     }
 
-    public function setStoredMessage(string $message) : void
+    public function setStoredMessage(string $message)
     {
         $_SESSION[self::$message] = $message;
     }
@@ -88,7 +85,7 @@ class PersistantUser
         ));
     }
 
-    public function saveUserToDatabase(string $username, string $password) : void
+    public function saveUserToDatabase(string $username, string $password)
     {
         assert(isset($username));
         assert(isset($password));

@@ -85,17 +85,17 @@ class RegisterView implements \model\RegisterObserver {
 		return (isset($_REQUEST[self::$registerMessageId])) ? $_REQUEST[self::$registerName] : "";
 	}
 
-	public function setRequestMessage(string $message) : void
+	public function setRequestMessage(string $message)
 	{
 		$_REQUEST[self::$registerMessageId] = $message;
 	}
 
-	public function setLastUsernameInput(string $username) : void
+	public function setLastUsernameInput(string $username)
 	{
 		$_REQUEST[self::$registerName] = $username;
 	}
 
-	public function redirectToHomePage() : void
+	public function redirectToHomePage()
 	{
 		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
 		exit;

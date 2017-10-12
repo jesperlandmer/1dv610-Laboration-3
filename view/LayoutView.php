@@ -16,7 +16,7 @@ class LayoutView {
     $this->dateTimeView = new DateTimeView();
   }
   
-  public function render($pageView) : void
+  public function render($pageView)
   {
     echo '<!DOCTYPE html>
       <html>

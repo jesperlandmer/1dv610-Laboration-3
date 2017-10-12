@@ -88,7 +88,7 @@ class LoginView implements \model\LoginObserver {
 		return (isset($_REQUEST[self::$name])) ? $_REQUEST[self::$name] : "";
 	}
 
-	public function setRequestUserName(string $username) : void
+	public function setRequestUserName(string $username)
 	{
 		$_REQUEST[self::$name] = $username;
 	}
@@ -103,7 +103,7 @@ class LoginView implements \model\LoginObserver {
 		return $_REQUEST[self::$messageId];
 	}
 
-	public function setRequestMessage(string $message) : void
+	public function setRequestMessage(string $message)
 	{
 		$_REQUEST[self::$messageId] = $message;
 	}
@@ -139,23 +139,23 @@ class LoginView implements \model\LoginObserver {
 		return $this->loginModel->isLoggedIn($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
 	}
 
-	public function setCookieCredentials(string $username, string $password) : void
+	public function setCookieCredentials(string $username, string $password)
 	{
 		setcookie(self::$cookieName, $username, time() + (86400 * 30), "/");
 		setcookie(self::$cookiePassword, $password, time() + (86400 * 30), "/");
 	}
 
-	public function clearCookieCredentials() : void {
+	public function clearCookieCredentials() {
 		setcookie(self::$cookieName, '', time() - 3600);
 		setcookie(self::$cookiePassword, '', time() - 3600);
 	}
 
-	public function setLastUsernameInput(string $username)  : void
+	public function setLastUsernameInput(string $username)
 	{
 		$_REQUEST[self::$name] = $username;
 	}
 
-	public function refreshPage() : void
+	public function refreshPage()
 	{
 		header('Location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
 		exit;

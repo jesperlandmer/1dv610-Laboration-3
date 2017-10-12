@@ -15,7 +15,7 @@ class LoginModel
         $this->persistentUser = new PersistantUser();
     }
 
-    public function newLogin(LoginObserver $observer) : void
+    public function newLogin(LoginObserver $observer)
     {
         $this->setLoginCredentials($observer);
         $this->executeLogin($observer);
@@ -29,13 +29,13 @@ class LoginModel
         return $this->isExistingUser();
     }
 
-    public function setLoginCredentials(LoginObserver $input) : void
+    public function setLoginCredentials(LoginObserver $input)
     {
         $this->username = $input->getRequestUsername();
         $this->password = $input->getRequestPassword();
     }
 
-    private function executeLogin(LoginObserver $view) : void
+    private function executeLogin(LoginObserver $view)
     {
         if ($this->isUsernameInput() == false) {
             $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
@@ -51,7 +51,7 @@ class LoginModel
         }
     }
 
-    public function executeLogout(LoginObserver $view) : void
+    public function executeLogout(LoginObserver $view)
     {
         $view->clearCookieCredentials();
         $this->persistentUser->setStoredMessage(\view\MessageView::LogoutSuccessful);
