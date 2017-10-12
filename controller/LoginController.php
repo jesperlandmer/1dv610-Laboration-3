@@ -58,6 +58,6 @@ class LoginController {
 
 	private function isLogOut()
 	{
-		return ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials())
+		return ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials());
 	}
 }
