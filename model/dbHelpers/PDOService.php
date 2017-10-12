@@ -18,7 +18,7 @@ class PDOService extends PDOConnection
             $this->executeStatement($PDOStatement, $data);
         } catch (\PDOException $err) {
 
-            throw new Exception($err);
+            throw new \Exception($err);
         }
 
         return $PDOStatement;
@@ -32,7 +32,7 @@ class PDOService extends PDOConnection
             $this->executeStatement($PDOStatement, $data);
         } catch (\PDOException $err) {
 
-            throw new Exception($err);
+            throw new \Exception($err);
         }
 
         return $PDOStatement;
