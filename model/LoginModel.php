@@ -38,13 +38,17 @@ class LoginModel
     private function executeLogin(LoginObserver $view)
     {
         if ($this->isUsernameInput() == false) {
+
             $view->setRequestMessage(\view\MessageView::ErrorNoUserNameInput);
         } elseif ($this->isPasswordInput() == false) {
+
             $view->setRequestMessage(\view\MessageView::ErrorNoPasswordInput);
         } elseif ($this->isExistingUser() == false) {
+
             $view->setLastUsernameInput($this->username);
             $view->setRequestMessage(\view\MessageView::ErrorNoUserFound);
-        } else {
+        } elseif ($view->isCookieCredentials() == false) {
+          
             $view->setCookieCredentials($this->username, $this->password);
             $this->persistentUser->setStoredMessage(\view\MessageView::LoginSuccessful);
             $view->refreshPage();
