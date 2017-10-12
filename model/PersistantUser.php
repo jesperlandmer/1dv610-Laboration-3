@@ -23,12 +23,12 @@ class PersistantUser
         $_SESSION[self::$username] = $user->getRequestUsername();
         $_SESSION[self::$password] = $user->getRequestPassword();
         $_SESSION[self::$passwordRepeat] = $user->getRequestPasswordRepeat();
-        $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
     public function validateStoredCredentials()
     {
         $this->validator->validate($this);
+        $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
     public function filterUsername(string $username) : string

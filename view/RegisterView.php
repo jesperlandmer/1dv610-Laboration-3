@@ -82,7 +82,7 @@ class RegisterView implements \model\RegisterObserver {
 
 	public function getRequestMessage() : string
 	{
-		return (isset($_REQUEST[self::$registerMessageId])) ? $_REQUEST[self::$registerName] : "";
+		return (isset($_REQUEST[self::$registerMessageId])) ? $_REQUEST[self::$registerMessageId] : "";
 	}
 
 	public function setRequestMessage(string $message)
