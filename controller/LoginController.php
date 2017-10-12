@@ -13,8 +13,8 @@ class LoginController {
 
 		if ($this->loginView->isLogin()) {
 			$this->doLogin();
-		} else if ($this->isLogOut) {
-			$this->doLogOut();
+		} else if ($this->isLogout()) {
+			$this->doLogout();
 		}
 	}
 
@@ -56,7 +56,7 @@ class LoginController {
 		$this->loginModel->executeLogout($this->loginView);
 	}
 
-	private function isLogOut()
+	private function isLogout()
 	{
 		return ($this->loginView->isLogOut() && $this->loginView->isCookieCredentials());
 	}
