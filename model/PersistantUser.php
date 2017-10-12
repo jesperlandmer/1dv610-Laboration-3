@@ -31,7 +31,7 @@ class PersistantUser
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
-    public function filterUsername(string $username) : string
+    public function filterUsername(string $username)
     {
         $_SESSION[self::$username] = filter_var($username, FILTER_SANITIZE_STRING);
     }
