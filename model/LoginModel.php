@@ -103,12 +103,19 @@ class LoginModel
         return $this->persistentUser->getStoredMessage();
     }
 
-    public function isCorrectUserCredentials(string $username, string $password) : bool
+    public function isCorrectUserCredentials(LoginObserver $observer) : bool
     {
-        if ($this->dbModel->isExistingUser($username, $password) == false) {
-          $this->doErrorWrongInfoInCookies();
-          return false;
-        }
+        $this->loginObserver = $observer;
+        return $this->isCorrectUser();
+    }
+
+    private function isCorrectUser()
+    {
+      if ($this->dbModel->isExistingUser($this->loginObserver->getCookieUsername(), 
+      $this->loginObserver->getCookiePassword())) {
         return true;
+      }
+      $this->doErrorWrongInfoInCookies();
+      return false;
     }
 }

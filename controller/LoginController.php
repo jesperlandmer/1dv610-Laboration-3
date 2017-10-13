@@ -35,8 +35,7 @@ class LoginController
 
     private function checkCookieLoginStatus() : bool
     {
-        return $this->loginModel->isCorrectUserCredentials($this->loginView->getCookieUsername(),
-        $this->loginView->getCookiePassword());
+        return $this->loginModel->isCorrectUserCredentials($this->loginView);
     }
 
     private function setStoredUsername()
