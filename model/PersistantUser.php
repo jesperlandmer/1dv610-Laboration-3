@@ -2,19 +2,20 @@
 
 namespace model;
 
-require_once("dbHelpers/PDOService.php");
+require_once("Validator.php");
 
 class PersistantUser
 {
     private static $username = "PersistantUser::Username";
     private static $password = "PersistantUser::Password";
     private static $passwordRepeat = "PersistantUser::PasswordRepeat";
+    private static $currentPassword = "PersistantUser::CurrentPassword";
     private static $message = "PersistantUser::Message";
 
     public function __construct()
     {
         assert(isset($_SESSION));
-        $this->dbHelper = new PDOService();
+
         $this->validator = new Validator();
     }
 
@@ -25,9 +26,22 @@ class PersistantUser
         $_SESSION[self::$passwordRepeat] = $user->getRequestPasswordRepeat();
     }
 
+    public function setEditCredentials(EditObserver $user)
+    {
+        $_SESSION[self::$currentPassword] = $user->getRequestCurrentPassword();
+        $_SESSION[self::$password] = $user->getRequestPassword();
+        $_SESSION[self::$passwordRepeat] = $user->getRequestPasswordRepeat();
+    }
+
     public function validateRegisterCredentials()
     {
         $this->validator->validateNewUser($this);
+        $_SESSION[self::$message] = $this->validator->getMessage();
+    }
+
+    public function validateEditCredentials()
+    {
+        $this->validator->validateNewPassword($this);
         $_SESSION[self::$message] = $this->validator->getMessage();
     }
 
@@ -53,7 +67,7 @@ class PersistantUser
 
     public function getStoredMessage() : string
     {
-        return ($this->isMessage()) ? $_SESSION[self::$message] : "";
+        return ($this->isErrors()) ? $_SESSION[self::$message] : "";
     }
 
     public function setStoredMessage(string $message)
@@ -66,33 +80,8 @@ class PersistantUser
         return isset($_SESSION[self::$username]);
     }
 
-    public function isMessage() : bool
-    {
-        return isset($_SESSION[self::$message]);
-    }
-
     public function isErrors() : bool
     {
-        return $_SESSION[self::$message] != \view\MessageView::RegisterSuccessful;
-    }
-
-    public function getUserFromDatabase(string $username) : \PDOStatement
-    {
-        assert(isset($username));
-
-        return $this->dbHelper->findData(array(
-            PDOVariables::DB_USERNAME_COLUMN => $username
-        ));
-    }
-
-    public function saveUserToDatabase(string $username, string $password)
-    {
-        assert(isset($username));
-        assert(isset($password));
-
-        $this->userData = $this->dbHelper->saveData(array(
-            PDOVariables::DB_USERNAME_COLUMN => $username,
-            PDOVariables::DB_PASSWORD_COLUMN => $password
-        ));
+        return (isset($_SESSION[self::$message]) && strlen($_SESSION[self::$message]) > 0);
     }
 }

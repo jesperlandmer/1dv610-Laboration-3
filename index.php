@@ -15,6 +15,9 @@ try {
 
     $masterController = new \controller\MasterController();
     $masterController->showPage();
+} catch(AssertionError $assertError) {
+
+    echo $assertError->getMessage();
 } catch(Exception $error) {
 
     echo $error->getMessage();
