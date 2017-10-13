@@ -2,15 +2,20 @@
 
 namespace model;
 
-require_once("PersistantUser.php");
+require_once("DatabaseModel.php");
 
 class Validator
 {
     private $message;
 
-    public function validateNewUser(PersistantUser $user)
+    public function __construct()
     {
-        $this->user = $user;
+        $this->dbModel = new DatabaseModel();
+    }
+
+    public function validateNewUser(PersistantUser $persistentUser)
+    {
+        $this->user = $persistentUser;
       
         if ($this->usernameHasMinLength() == false) {
             $this->message .= \view\MessageView::ErrorUsernameLength;
@@ -27,6 +32,19 @@ class Validator
       
         if ($this->isUniqueUsername() == false) {
             $this->message .= \view\MessageView::ErrorUserExists;
+        }
+      
+        if ($this->repeatedPasswordMatch() == false) {
+            $this->message .= \view\MessageView::ErrorPasswordMatch;
+        }
+    }
+
+    public function validateNewPassword(PersistantUser $persistentUser)
+    {
+        $this->user = $persistentUser;
+      
+        if ($this->passwordHasMinLength() == false) {
+            $this->message .= \view\MessageView::ErrorPasswordLength;
         }
       
         if ($this->repeatedPasswordMatch() == false) {
@@ -52,7 +70,7 @@ class Validator
     public function isUniqueUsername() : bool
     {
         $username = $this->user->getStoredUsername();
-        return $this->user->getUserFromDatabase($username)->rowCount() == 0;
+        return $this->dbModel->getUserFromDatabase($username)->rowCount() == 0;
     }
 
     public function repeatedPasswordMatch() : bool
@@ -67,10 +85,6 @@ class Validator
 
     public function getMessage() : string
     {
-        if ($this->isMessage()) {
-            return $this->message;
-        } else {
-            return \view\MessageView::RegisterSuccessful;
-        }
+        return ($this->isMessage()) ? $this->message : "";
     }
 }

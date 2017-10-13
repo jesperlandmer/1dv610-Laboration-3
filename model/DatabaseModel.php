@@ -6,7 +6,6 @@ require_once("dbHelpers/PDOService.php");
 
 class DatabaseModel
 {
-
     private static $cost = "cost";
 
     public function __construct()
@@ -45,18 +44,18 @@ class DatabaseModel
         ));
     }
 
+    public function isExistingUser(string $username, string $password) : bool
+    {
+        return password_verify($password, $this->getDBUserPassword($username));
+    }
+
     private function getPasswordHash(string $password) : string
     {
         return password_hash("$password", PASSWORD_BCRYPT, [self::$cost => 8]);
     }
 
-    public function isExistingUser(string $username, strin $password) : bool
+    private function getDBUserPassword(string $username) : string
     {
-        return password_verify($password, $this->getDBUserPassword($username));
-    }
-
-    public function getDBUserPassword(string $username) : string
-    {
-        return $this->persistentUser->getUserFromDatabase($username)->fetch()[PDOVariables::DB_PASSWORD_COLUMN];
+        return $this->getUserFromDatabase($username)->fetch()[PDOVariables::DB_PASSWORD_COLUMN];
     }
 }

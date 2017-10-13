@@ -3,11 +3,10 @@
 namespace model;
 
 require_once("PersistantUser.php");
-require_once("Validator.php");
+require_once("DatabaseModel.php");
 
 class RegisterModel
 {
-
     private $username;
     private $password;
     private $registerObserver;
@@ -15,20 +14,26 @@ class RegisterModel
     public function __construct()
     {
         $this->persistentUser = new PersistantUser();
+        $this->dbModel = new DatabaseModel();
     }
 
     public function newRegister(RegisterObserver $observer)
     {
         $this->registerObserver = $observer;
-        $this->setRegisterCredentials();
-        $this->setPersistentUser();
+        $this->setNecessaryCredentials();
         $this->executeRegister();
+    }
+
+    private function setNecessaryCredentials() 
+    {
+      $this->setRegisterCredentials();
+      $this->setPersistentUser();
     }
 
     private function setRegisterCredentials()
     {
         $this->username = $this->registerObserver->getRequestUsername();
-        $this->password = $this->getHashedPassword();
+        $this->password = $this->registerObserver->getRequestPassword();
     }
 
     private function setPersistentUser()
@@ -40,20 +45,20 @@ class RegisterModel
     public function executeRegister()
     {
         if ($this->persistentUser->isErrors() == false) {
-            $this->persistentUser->saveUserToDatabase($this->username, $this->password);
-            $this->registerObserver->redirectToHomePage();
+            $this->registerSuccessful();
         } else {
-            $this->handleError();
+            $this->doErrorHandling();
         }
     }
 
-    private function getHashedPassword() : string
+    private function registerSuccessful()
     {
-        $password = $this->registerObserver->getRequestPassword();
-        return password_hash("$password", PASSWORD_BCRYPT, ["cost" => 8]);
+        $this->dbModel->saveUserToDatabase($this->username, $this->password);
+        $this->persistentUser->setStoredMessage(\view\MessageView::RegisterSuccessful);
+        $this->registerObserver->redirectToHomePage();
     }
 
-    public function handleError()
+    private function doErrorHandling()
     {
         $this->registerObserver->setLastUsernameInput($this->persistentUser->getStoredUsername());
         $this->registerObserver->setRequestMessage($this->persistentUser->getStoredMessage());

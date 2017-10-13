@@ -3,59 +3,74 @@
 namespace model;
 
 require_once("PersistantUser.php");
-require_once("Validator.php");
+require_once("DatabaseModel.php");
 
-class EditModel
+class EditModel 
 {
-    private $currentPassword;
-    private $password;
-    private $passwordRepeat;
-    private $editObserver;
+    private $newPassword;
+    private $observer;
 
     public function __construct()
     {
         $this->persistentUser = new PersistantUser();
+        $this->dbModel = new DatabaseModel();
     }
 
-    public function newChangePassword(EditObserver $editObserver)
+    public function newChangePassword(EditObserver $observer)
     {
-        $this->setEditCredentials();
+        $this->editObserver = $observer;
+        $this->setNecessaryCredentials();
+        $this->executeEdit();
+    }
+
+    private function setNecessaryCredentials()
+    {
+        $this->setLoginCredentials();
         $this->setPersistentUser();
-        $this->executeRegister();
     }
 
-    private function setChangePasswordCredentials()
+    private function setEditCredentials()
     {
-        $this->currentPassword = $this->editObserver->getRequestCurrentPassword();
-        $this->password = $this->editObserver->getRequestPassword();
-        $this->passwordRepeat = $this->editObserver->getRequestPasswordRepeat();
+        $this->username = $this->editObserver->getCookieUsername();
+        $this->password = $this->editObserver->getRequestCurrentPassword();
+        $this->newPassword = $this->editObserver->getRequestPassword();
     }
 
     private function setPersistentUser()
     {
-        $this->persistentUser->setChangePasswordCredentials($this->editObserver);
-        $this->persistentUser->validateChangePasswordCredentials();
+        $this->persistentUser->setEditCredentials($this->editObserver);
+        $this->persistentUser->validateEditCredentials();
     }
 
-    public function executeEdit()
+    private function executeEdit()
     {
-        if ($this->persistentUser->isErrors() == false) {
-            $this->persistentUser->updateUserFromDatabase($this->username, $this->password);
-            $this->editObserver->redirectToHomePage();
+        if ($this->dbModel->isExistingUser($this->username, $this->password) == false) {
+            
+            $this->doErrorWrongCurrentPassword();
+        } else if ($this->persistentUser->isErrors() == true) {
+
+            $this->doErrorPasswordValidation();
         } else {
-            $this->handleError();
+        
+            $this->editSuccessful();
         }
     }
 
-    private function getHashedPassword() : string
+    private function doErrorWrongCurrentPassword()
     {
-        $password = $this->editObserver->getRequestPassword();
-        return password_hash("$password", PASSWORD_BCRYPT, ["cost" => 8]);
+        $this->editObserver->setRequestMessage(\view\MessageView::ErrorCurrentPassword);
     }
 
-    public function handleError()
+    private function doErrorPasswordValidation()
     {
-        $this->editObserver->setLastUsernameInput($this->persistentUser->getStoredUsername());
         $this->editObserver->setRequestMessage($this->persistentUser->getStoredMessage());
+    }
+
+    private function editSuccessful()
+    {
+        $this->persistentUser->updateUserFromDatabase($this->username, $this->newPassword);
+        $this->editObserver->setCookiePassword($this->newPassword);
+        $this->editObserver->setRequestMessage(\view\MessageView::ChangePasswordSuccessful);
+        $this->editObserver->redirectToHomePage();
     }
 }
