@@ -106,13 +106,14 @@ class LoginModel
     public function isCorrectUserCredentials(LoginObserver $observer) : bool
     {
         $this->loginObserver = $observer;
-        return $this->isCorrectUser();
+        return $this->isCorrectInfoInCookie();
     }
 
-    private function isCorrectUser()
+    private function isCorrectInfoInCookie()
     {
-      if ($this->dbModel->isExistingUser($this->loginObserver->getCookieUsername(), 
-      $this->loginObserver->getCookiePassword())) {
+      $username = $this->loginObserver->getCookieUsername();
+      $password = $this->loginObserver->getCookiePassword();
+      if ($this->dbModel->isExistingUser($username, $password)) {
         return true;
       }
       $this->doErrorWrongInfoInCookies();
