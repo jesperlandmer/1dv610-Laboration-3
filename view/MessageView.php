@@ -13,8 +13,11 @@ class MessageView
     const ErrorNoUserNameInput = "Username is missing <br>";
     const ErrorNoPasswordInput = "Password is missing <br>";
     const ErrorNoUserFound = "Wrong name or password <br>";
+
+    const ErrorCurrentPassword = "Current user password is incorrect. <br>";
     
     const RegisterSuccessful = "Registered new user.";
     const LoginSuccessful = "Welcome";
+    const ChangePasswordSuccessful = "Saved new password";
     const LogoutSuccessful = "Bye bye!";
 }
