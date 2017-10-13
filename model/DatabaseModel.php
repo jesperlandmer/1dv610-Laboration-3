@@ -54,6 +54,11 @@ class DatabaseModel
         return password_hash("$password", PASSWORD_BCRYPT, [self::$cost => 8]);
     }
 
+    public function getDBUserUsername(string $username) : string
+    {
+        return $this->getUserFromDatabase($username)->fetch()[PDOVariables::DB_USERNAME_COLUMN];
+    }
+
     private function getDBUserPassword(string $username) : string
     {
         return $this->getUserFromDatabase($username)->fetch()[PDOVariables::DB_PASSWORD_COLUMN];

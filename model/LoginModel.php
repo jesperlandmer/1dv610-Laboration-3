@@ -8,8 +8,8 @@ require_once("DatabaseModel.php");
 class LoginModel
 {
 
-    protected $username;
-    protected $password;
+    private $username;
+    private $password;
     private $loginObserver;
 
     public function __construct()

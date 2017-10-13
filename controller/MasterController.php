@@ -7,6 +7,7 @@ require_once('RegisterController.php');
 require_once('LoginController.php');
 require_once('LogoutController.php');
 require_once('EditController.php');
+require_once('SearchController.php');
 
 class MasterController {
 
@@ -18,6 +19,7 @@ class MasterController {
         $this->loginController = new \controller\LoginController();
         $this->logoutController = new \controller\LogoutController();
         $this->editController = new \controller\EditController();
+        $this->searchController = new \controller\SearchController();
         $this->layoutView = new \view\LayoutView($this->loginController->getLoginStatus());
 
         $this->isLoggedIn = $this->loginController->getLoginStatus();

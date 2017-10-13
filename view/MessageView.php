@@ -16,9 +16,12 @@ class MessageView
     const ErrorCookieInfo = "Wrong information in cookies <br>";
 
     const ErrorCurrentPassword = "Current user password is incorrect. <br>";
+
+    const ErrorSearchUsername = "No search result. <br>";
     
     const RegisterSuccessful = "Registered new user.";
     const LoginSuccessful = "Welcome";
     const ChangePasswordSuccessful = "Saved new password";
+    const SearchSuccessful = "Found user: ";
     const LogoutSuccessful = "Bye bye!";
 }

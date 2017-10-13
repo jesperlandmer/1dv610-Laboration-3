@@ -9,7 +9,7 @@ Alternatively, you could visit our [Open Issues](https://github.com/jesperlandme
 UC1 - UC4 are testable using the [Automatic Test Application](http://csquiz.lnu.se:25083/index.php).
 Make sure you type in the right URL for the application, and type in username and password for an existing user.
 
-Testing instructions for [UC5](https://github.com/jesperlandmer/1dv610-Laboration-3/issues/5) and [UC6](https://github.com/jesperlandmer/1dv610-Laboration-3/issues/6) are defined in the corresponding issues.
+Testing instructions for [UC5](https://github.com/jesperlandmer/1dv610-Laboration-3/issues/5) and [UC6](https://github.com/jesperlandmer/1dv610-Laboration-3/issues/6) are defined in their corresponding issues.
 
 # How to install?
 

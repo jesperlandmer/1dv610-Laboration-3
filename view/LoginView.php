@@ -8,6 +8,7 @@ class LoginView implements \model\LoginObserver {
 
 	private static $login = "LoginView::Login";
 	private static $logout = "LoginView::Logout";
+	private static $search = "LoginView::Search";
 	private static $name = "LoginView::UserName";
 	private static $password = "LoginView::Password";
 	private static $cookieName = "LoginView::CookieName";
@@ -32,6 +33,11 @@ class LoginView implements \model\LoginObserver {
 		return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
+				<label for="' . self::$name . '">Search User :</label>
+				<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+				<input type="submit" name="' . self::$search . '" value="search"/>
+				<br><br>
+
 				<input type="submit" name="' . self::$logout . '" value="logout"/>
 			</form>
 		';
@@ -68,6 +74,11 @@ class LoginView implements \model\LoginObserver {
 	public function isRequestLogout() : bool
 	{
 		return isset($_REQUEST[self::$logout]);
+	}
+
+	public function isRequestSearch() : bool
+	{
+		return isset($_REQUEST[self::$search]);
 	}
 
 	public function getRequestUserName() : string
