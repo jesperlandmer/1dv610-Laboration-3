@@ -26,7 +26,7 @@ class Validator
         }
       
         if ($this->inputIsValidFormat() == false) {
-            $user->filterUsername($this->user->getStoredUsername());
+            $this->user->filterUsername($this->user->getStoredUsername());
             $this->message .= \view\MessageView::ErrorInvalidFormat;
         }
       
