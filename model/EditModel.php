@@ -44,12 +44,12 @@ class EditModel
 
     private function executeEdit()
     {
-        if ($this->dbModel->isExistingUser($this->username, $this->password) == false) {
-            
-            $this->doErrorWrongCurrentPassword();
-        } else if ($this->persistentUser->isErrors() == true) {
+         if ($this->persistentUser->isErrors() == true) {
 
             $this->doErrorPasswordValidation();
+        } elseif ($this->dbModel->isExistingUser($this->username, $this->password) == false) {
+            
+            $this->doErrorWrongCurrentPassword();
         } else {
         
             $this->editSuccessful();
