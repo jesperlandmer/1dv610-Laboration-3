@@ -25,7 +25,7 @@ class EditModel
 
     private function setNecessaryCredentials()
     {
-        $this->setLoginCredentials();
+        $this->setEditCredentials();
         $this->setPersistentUser();
     }
 
@@ -68,9 +68,10 @@ class EditModel
 
     private function editSuccessful()
     {
-        $this->persistentUser->updateUserFromDatabase($this->username, $this->newPassword);
+        $this->dbModel->updateUserFromDatabase($this->username, $this->newPassword);
         $this->editObserver->setCookiePassword($this->newPassword);
         $this->editObserver->setRequestMessage(\view\MessageView::ChangePasswordSuccessful);
         $this->editObserver->redirectToHomePage();
+        echo var_dump($_COOKIE);
     }
 }

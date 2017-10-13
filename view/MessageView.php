@@ -13,6 +13,7 @@ class MessageView
     const ErrorNoUserNameInput = "Username is missing <br>";
     const ErrorNoPasswordInput = "Password is missing <br>";
     const ErrorNoUserFound = "Wrong name or password <br>";
+    const ErrorCookieInfo = "Wrong information in cookies <br>";
 
     const ErrorCurrentPassword = "Current user password is incorrect. <br>";
     

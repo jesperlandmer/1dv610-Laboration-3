@@ -71,6 +71,11 @@ class LoginModel
         $this->loginObserver->setRequestMessage(\view\MessageView::ErrorNoUserFound);
     }
 
+    private function doErrorWrongInfoInCookies()
+    {
+        $this->loginObserver->setRequestMessage(\view\MessageView::ErrorCookieInfo);
+    }
+
     private function loginSuccessful()
     {
         $this->loginObserver->setCookieCredentials($this->username, $this->password);
@@ -100,6 +105,10 @@ class LoginModel
 
     public function isCorrectUserCredentials(string $username, string $password) : bool
     {
-        return $this->dbModel->isExistingUser($username, $password);
+        if ($this->dbModel->isExistingUser($username, $password) == false) {
+          $this->doErrorWrongInfoInCookies();
+          return false;
+        }
+        return true;
     }
 }
