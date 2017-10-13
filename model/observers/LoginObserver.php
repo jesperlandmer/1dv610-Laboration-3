@@ -7,5 +7,6 @@ interface LoginObserver {
 	public function getRequestUsername();
 	public function getRequestPassword();
 	public function setCookieCredentials(string $username, string $password);
+	public function clearCookieCredentials();
 	public function setRequestMessage(string $message);
 }
