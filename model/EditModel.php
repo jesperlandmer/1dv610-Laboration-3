@@ -68,10 +68,14 @@ class EditModel
 
     private function editSuccessful()
     {
-        $this->dbModel->updateUserFromDatabase($this->username, $this->newPassword);
-        $this->editObserver->setCookiePassword($this->newPassword);
-        $this->editObserver->setRequestMessage(\view\MessageView::ChangePasswordSuccessful);
+        $this->updateCredentials();
+        $this->persistentUser->setStoredMessage(\view\MessageView::ChangePasswordSuccessful);
         $this->editObserver->redirectToHomePage();
-        echo var_dump($_COOKIE);
+    }
+
+    private function updateCredentials()
+    {
+        $this->dbModel->updateUserFromDatabase($this->username, $this->newPassword);
+        $this->editObserver->setCookiePassword($this->newPassword);   
     }
 }

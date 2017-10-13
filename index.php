@@ -2,6 +2,8 @@
 
 session_start();
 
+ob_start();
+
 // ACTIVATE ERROR SHOWING
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
@@ -27,3 +29,4 @@ try {
 }
 
 session_unset();
+ob_end_flush();

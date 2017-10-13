@@ -67,7 +67,9 @@ class EditView implements \model\EditObserver {
 
 	public function setCookiePassword(string $password)
 	{
+		echo $password;
 		$this->loginView->updateCookiePassword($password);
+		echo var_dump($_COOKIE);
 	}
 
 	public function getRequestCurrentPassword() : string

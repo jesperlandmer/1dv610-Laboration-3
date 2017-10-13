@@ -118,7 +118,7 @@ class LoginView implements \model\LoginObserver {
 
 	public function updateCookiePassword(string $password)
 	{
-		$_COOKIE[self::$cookiePassword] = $password;
+		setcookie(self::$cookiePassword, $password, time() + (86400 * 30), "/");
 	}
 
 	public function clearCookieCredentials() {
