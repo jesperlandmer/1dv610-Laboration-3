@@ -17,13 +17,11 @@ class PDOConnection {
     try {
 
       $this->dbConnect = new \PDO("mysql:host=$this->dbHost;dbname=$this->dbName", $this->dbUser, $this->dbPass);
-      $this->dbData = new PDOVariables();
-
       $this->dbConnect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
     catch (\PDOException $err) {
 
-      throw new Exception("DB Connection failed");
+      throw new PDOException("DB Connection failed");
       die();
     }
   }

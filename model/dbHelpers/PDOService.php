@@ -47,16 +47,16 @@ class PDOService extends PDOConnection
 
     private function getSaveStatement() : string
     {
-        return "INSERT INTO Users($this->usernameColumn, $this->passwordColumn) VALUES(:$this->usernameColumn, :$this->passwordColumn)";
+        return "INSERT INTO $this->$dbName($this->usernameColumn, $this->passwordColumn) VALUES(:$this->usernameColumn, :$this->passwordColumn)";
     }
 
     private function getEditStatement() : string
     {
-        return "UPDATE Users SET $this->passwordColumn = :$this->passwordColumn WHERE $this->usernameColumn = :$this->usernameColumn";
+        return "UPDATE $this->$dbName SET $this->passwordColumn = :$this->passwordColumn WHERE $this->usernameColumn = :$this->usernameColumn";
     }
 
     private function getFindStatement() : string
     {
-        return "SELECT * FROM Users WHERE $this->usernameColumn = :$this->usernameColumn";
+        return "SELECT * FROM $this->$dbName WHERE $this->usernameColumn = :$this->usernameColumn";
     }
 }
