@@ -113,7 +113,9 @@ class LoginModel
     {
       $username = $this->loginObserver->getCookieUsername();
       $password = $this->loginObserver->getCookiePassword();
+
       if ($this->dbModel->isExistingUser($username, $password)) {
+        $this->loginObserver->setRequestMessage(\view\MessageView::CookieLoginSuccessful);
         return true;
       }
       $this->doErrorWrongInfoInCookies();

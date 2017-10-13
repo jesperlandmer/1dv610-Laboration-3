@@ -21,6 +21,7 @@ class MessageView
     
     const RegisterSuccessful = "Registered new user.";
     const LoginSuccessful = "Welcome";
+    const CookieLoginSuccessful = "Welcome back with cookie";
     const ChangePasswordSuccessful = "Saved new password";
     const SearchSuccessful = "Found user: ";
     const LogoutSuccessful = "Bye bye!";
