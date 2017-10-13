@@ -15,11 +15,6 @@ class LoginView implements \model\LoginObserver {
 	private static $keep = "LoginView::KeepMeLoggedIn";
 	private static $messageId = "LoginView::Message";
 
-	public function __construct(\model\LoginModel $loginModel) 
-	{
-		$this->loginModel = $loginModel;
-	}
-
 	public function showResponse(bool $isLoggedIn) : string
 	{
 		$message = $this->getRequestMessage();
@@ -105,15 +100,25 @@ class LoginView implements \model\LoginObserver {
 		return (isset($_COOKIE[self::$cookieName]) && isset($_COOKIE[self::$cookiePassword]));
 	}
 
-	public function isCookieCredentialsCorrect() : bool
-	{
-		return $this->loginModel->isLoggedInWithCookies($_COOKIE[self::$cookieName], $_COOKIE[self::$cookiePassword]);
-	}
-
 	public function setCookieCredentials(string $username, string $password)
 	{
 		setcookie(self::$cookieName, $username, time() + (86400 * 30), "/");
 		setcookie(self::$cookiePassword, $password, time() + (86400 * 30), "/");
+	}
+
+	public function getCookieUsername() : string
+	{
+		return $_COOKIE[self::$cookieName];
+	}
+
+	public function getCookiePassword() : string
+	{
+		return $_COOKIE[self::$cookiePassword];
+	}
+
+	public function updateCookiePassword(string $password)
+	{
+		$_COOKIE[self::$cookiePassword] = $password;
 	}
 
 	public function clearCookieCredentials() {

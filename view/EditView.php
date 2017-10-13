@@ -2,13 +2,22 @@
 
 namespace view;
 
-class EditView {
+require_once(__DIR__ . '/../model/observers/EditObserver.php');
+require_once("LoginView.php");
+
+class EditView implements \model\EditObserver {
 
 	private static $edit = "EditView::Edit";
 	private static $currentPassword = "EditView::CurrentPassword";
 	private static $password = "EditView::Password";
 	private static $passwordRepeat = "EditView::PasswordRepeat";
+	private static $cookieName = "LoginView::CookieName";
 	private static $messageId = "EditView::Message";
+
+	public function __construct()
+	{
+		$this->loginView = new LoginView();
+	}
 
 	public function showResponse(bool $isLoggedIn) : string
 	{
@@ -51,6 +60,16 @@ class EditView {
 		return isset($_REQUEST[self::$edit]);
 	}
 
+	public function getCookieUsername() : string
+	{
+		return $this->loginView->getCookieUsername();
+	}
+
+	public function setCookiePassword(string $password)
+	{
+		$this->loginView->updateCookiePassword($password);
+	}
+
 	public function getRequestCurrentPassword() : string
 	{
 		return $_REQUEST[self::$currentPassword];
@@ -74,11 +93,6 @@ class EditView {
 	public function setRequestMessage(string $message)
 	{
 		$_REQUEST[self::$messageId] = $message;
-	}
-
-	public function setLastUsernameInput(string $username)
-	{
-		$_REQUEST[self::$name] = $username;
 	}
 
 	public function redirectToHomePage()
