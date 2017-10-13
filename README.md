@@ -23,4 +23,14 @@ To install the application on a local server, download any solution stack contai
 
 To install the application on a public server, I suggest using Digital Ocean. I recommend checking out ["How To Set Up Automatic Deployment with Git with a VPS"](https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps) on Digital Ocean.
 
+Also, don't forget to setup your MySQL Table. I'd suggest just making a simple user table, like this:
+
+    +----------+-------------+------+-----+---------+----------------+
+    | Field    | Type        | Null | Key | Default | Extra          |
+    +----------+-------------+------+-----+---------+----------------+
+    | user_id  | int(11)     | NO   | PRI | NULL    | auto_increment |
+    | username | varchar(80) | NO   | UNI | NULL    |                |
+    | password | text        | NO   |     | NULL    |                |
+    +----------+-------------+------+-----+---------+----------------+
+
 Don't forget to set the variables for your Database host, name, pass and table defined in PDOService.php. My suggestion is to create class called PDOVariables and add the needed database info to well represented constants.
